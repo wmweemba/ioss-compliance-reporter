@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
-import { AlertTriangle, CheckCircle, Mail, ArrowRight, ArrowLeft } from 'lucide-react'
+import axios from 'axios'
+import { AlertTriangle, CheckCircle, Mail, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,11 @@ import { cn } from '@/lib/utils'
 const emailSchema = z.object({
   email: z.string().email('Please enter a valid email address').min(1, 'Email is required')
 })
+
+/**
+ * API Configuration
+ */
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 /**
  * Quiz questions configuration
@@ -109,6 +115,7 @@ export default function RiskQuiz() {
   const [answers, setAnswers] = useState({})
   const [showResults, setShowResults] = useState(false)
   const [emailSubmitted, setEmailSubmitted] = useState(false)
+  const [submissionStatus, setSubmissionStatus] = useState('idle') // idle, loading, success, error
 
   /**
    * Form handling with React Hook Form and Zod validation
@@ -160,18 +167,71 @@ export default function RiskQuiz() {
    * @param {Object} data - Form data with email
    */
   const onEmailSubmit = async (data) => {
+    setSubmissionStatus('loading')
+    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const riskAssessmentResult = calculateRisk(answers)
       
-      toast.success("Thanks! You've been added to our beta list.", {
-        description: "We'll contact you soon with your IOSS compliance solution."
+      // Prepare payload for API
+      const payload = {
+        email: data.email,
+        riskLevel: riskAssessmentResult.result,
+        userAnswers: answers,
+        source: 'risk_quiz'
+      }
+
+      // Send to backend API
+      const response = await axios.post(`${API_BASE_URL}/leads`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000 // 10 second timeout
       })
+
+      if (response.data.success) {
+        setSubmissionStatus('success')
+        setEmailSubmitted(true)
+        
+        // Show success message based on response
+        const message = response.data.emailError 
+          ? "Thanks! You've been registered. We'll contact you soon."
+          : "Thanks! Check your email for next steps."
+        
+        toast.success("Successfully registered!", {
+          description: message,
+          duration: 5000
+        })
+        
+        reset()
+      } else {
+        throw new Error(response.data.message || 'Submission failed')
+      }
       
-      setEmailSubmitted(true)
-      reset()
     } catch (error) {
-      toast.error("Something went wrong. Please try again.")
+      setSubmissionStatus('error')
+      console.error('Email submission error:', error)
+      
+      // Handle specific error types
+      if (error.response?.status === 409) {
+        toast.error("Email already registered", {
+          description: "You're already in our system. We'll be in touch soon!"
+        })
+      } else if (error.response?.status === 400) {
+        toast.error("Invalid email", {
+          description: "Please check your email address and try again."
+        })
+      } else if (error.code === 'ECONNABORTED') {
+        toast.error("Request timeout", {
+          description: "Please check your connection and try again."
+        })
+      } else {
+        toast.error("Something went wrong", {
+          description: "Please try again or contact support if the problem persists."
+        })
+      }
+      
+      // Reset status after a delay
+      setTimeout(() => setSubmissionStatus('idle'), 3000)
     }
   }
 
@@ -183,6 +243,8 @@ export default function RiskQuiz() {
     setAnswers({})
     setShowResults(false)
     setEmailSubmitted(false)
+    setSubmissionStatus('idle')
+    reset()
   }
 
   /**
@@ -233,19 +295,30 @@ export default function RiskQuiz() {
 
               {/* Email Capture Form - Only show for risk cases */}
               {(riskAssessment.result === 'CRITICAL_RISK' || riskAssessment.result === 'MODERATE_RISK') && !emailSubmitted && (
-                <div className="space-y-4">
+                <div className={cn(
+                  "space-y-4 p-6 rounded-lg border-2",
+                  riskAssessment.result === 'CRITICAL_RISK' 
+                    ? "bg-destructive/5 border-destructive/20" 
+                    : "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700"
+                )}>
                   <div className="text-center">
                     <h3 className="text-lg font-semibold text-foreground mb-2">
-                      Get Your IOSS Compliance Solution
+                      {riskAssessment.result === 'CRITICAL_RISK' 
+                        ? '🚨 Get Immediate IOSS Help'
+                        : '⚠️ Fix Your Compliance Gap'
+                      }
                     </h3>
                     <p className="text-muted-foreground text-sm">
-                      Join our beta to auto-generate your IOSS reports and stay compliant
+                      {riskAssessment.result === 'CRITICAL_RISK'
+                        ? 'Our experts will contact you within 24 hours with a compliance solution'
+                        : 'Join our beta to auto-generate your IOSS reports and stay compliant'
+                      }
                     </p>
                   </div>
                   
                   <form onSubmit={handleSubmit(onEmailSubmit)} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-medium">
+                      <Label htmlFor="email" className="text-sm font-medium text-foreground">
                         Email Address
                       </Label>
                       <div className="relative">
@@ -254,26 +327,61 @@ export default function RiskQuiz() {
                           id="email"
                           type="email"
                           placeholder="your@email.com"
+                          disabled={submissionStatus === 'loading'}
                           className={cn(
-                            "pl-10",
-                            errors.email && "border-destructive focus:border-destructive"
+                            "pl-10 bg-background",
+                            errors.email && "border-destructive focus:border-destructive",
+                            submissionStatus === 'loading' && "opacity-50 cursor-not-allowed"
                           )}
                           {...register('email')}
                         />
                       </div>
                       {errors.email && (
-                        <p className="text-sm text-destructive">{errors.email.message}</p>
+                        <p className="text-sm text-destructive flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          {errors.email.message}
+                        </p>
                       )}
                     </div>
                     
                     <Button 
                       type="submit" 
-                      className="w-full" 
-                      disabled={isSubmitting}
+                      className={cn(
+                        "w-full transition-all",
+                        riskAssessment.result === 'CRITICAL_RISK'
+                          ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                          : "bg-yellow-600 hover:bg-yellow-700 text-white"
+                      )}
+                      disabled={submissionStatus === 'loading'}
                     >
-                      {isSubmitting ? 'Joining Beta...' : 'Join the Beta →'}
+                      {submissionStatus === 'loading' ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          {riskAssessment.result === 'CRITICAL_RISK' ? 'Getting Help...' : 'Joining Beta...'}
+                        </>
+                      ) : (
+                        <>
+                          {riskAssessment.result === 'CRITICAL_RISK' 
+                            ? '🚨 Get Immediate Help →' 
+                            : '🔧 Join Beta Program →'
+                          }
+                        </>
+                      )}
                     </Button>
+
+                    {/* Submission Status Indicators */}
+                    {submissionStatus === 'error' && (
+                      <div className="text-center text-sm text-destructive">
+                        <AlertTriangle className="w-4 h-4 inline mr-1" />
+                        Submission failed. Please try again.
+                      </div>
+                    )}
                   </form>
+
+                  {/* Trust indicators */}
+                  <div className="text-center text-xs text-muted-foreground">
+                    <p>✓ No spam • ✓ Unsubscribe anytime • ✓ GDPR compliant</p>
+                  </div>
                 </div>
               )}
 
@@ -283,12 +391,30 @@ export default function RiskQuiz() {
                   <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-500 mx-auto" />
                   <div>
                     <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">
-                      You're All Set!
+                      {riskAssessment.result === 'CRITICAL_RISK' 
+                        ? '🚨 Emergency Support Activated!'
+                        : '✅ Welcome to the Beta Program!'
+                      }
                     </h3>
                     <p className="text-green-700 dark:text-green-300 text-sm">
-                      We'll be in touch soon with your IOSS compliance solution.
+                      {riskAssessment.result === 'CRITICAL_RISK'
+                        ? 'Our compliance experts will contact you within 24 hours to resolve your IOSS issues immediately.'
+                        : 'Check your email for next steps. We\'ll help you automate your IOSS compliance.'
+                      }
                     </p>
                   </div>
+                  
+                  {/* Additional info for critical cases */}
+                  {riskAssessment.result === 'CRITICAL_RISK' && (
+                    <div className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/40 p-3 rounded border">
+                      <strong>⏰ Immediate Actions:</strong>
+                      <ul className="mt-1 text-left list-disc list-inside space-y-1">
+                        <li>Check your email for emergency IOSS guidance</li>
+                        <li>Our team is preparing your compliance package</li>
+                        <li>Expect a call within the next business day</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
 
