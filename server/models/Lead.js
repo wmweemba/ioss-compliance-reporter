@@ -58,8 +58,7 @@ const leadSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 })
 
-// Indexes for better query performance
-leadSchema.index({ email: 1 })
+// Indexes for better query performance (email index handled by unique: true)
 leadSchema.index({ createdAt: -1 })
 leadSchema.index({ riskLevel: 1, createdAt: -1 })
 
