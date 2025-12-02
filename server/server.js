@@ -12,10 +12,15 @@ dotenv.config()
 const app = express()
 const PORT = parseInt(process.env.PORT) || 5000
 
+// Determine CORS origin based on environment
+const isProduction = process.env.NODE_ENV === 'production'
+const defaultCorsOrigin = isProduction ? 'https://vatpilot.netlify.app' : 'http://localhost:5173'
+const corsOrigin = process.env.CORS_ORIGIN || defaultCorsOrigin
+
 // Log environment status for debugging
 console.log('🌍 Environment:', process.env.NODE_ENV || 'development')
 console.log('🚀 Starting server on port:', PORT)
-console.log('🔧 CORS Origin:', process.env.CORS_ORIGIN || 'http://localhost:5173')
+console.log('🔧 CORS Origin:', corsOrigin)
 console.log('📧 From Email:', process.env.FROM_EMAIL || 'not set')
 console.log('🗄️ MongoDB URI:', process.env.MONGO_URI ? 'configured' : 'missing')
 console.log('📧 Resend API Key:', process.env.RESEND_API_KEY ? 'configured' : 'missing')
@@ -31,7 +36,7 @@ if (process.env.RESEND_API_KEY) {
 
 // Middleware
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: corsOrigin,
   credentials: true
 }))
 app.use(express.json())
