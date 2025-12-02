@@ -41,7 +41,7 @@ connectDB()
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    message: 'IOSS Compliance Reporter API is running',
+    message: 'VATpilot API is running',
     timestamp: new Date().toISOString()
   })
 })
@@ -114,10 +114,24 @@ app.post('/api/leads', async (req, res) => {
     // Send email via Resend
     try {
       const emailResponse = await resend.emails.send({
-        from: process.env.FROM_EMAIL || 'IOSS Compliance <onboarding@resend.dev>',
+        from: process.env.FROM_EMAIL || 'VATpilot Support <onboarding@resend.dev>',
         to: [email],
         subject: emailContent.subject,
-        html: emailContent.html
+        html: emailContent.html,
+        headers: {
+          'X-Entity-Ref-ID': savedLead._id.toString(),
+          'List-Unsubscribe': '<mailto:unsubscribe@resend.dev>',
+        },
+        tags: [
+          {
+            name: 'category',
+            value: 'risk-assessment'
+          },
+          {
+            name: 'risk-level',
+            value: riskLevel.toLowerCase()
+          }
+        ]
       })
 
       // Update lead with email sent status
@@ -237,7 +251,7 @@ function generateEmailContent(riskLevel, email) {
 
   if (riskLevel === 'CRITICAL_RISK') {
     return {
-      subject: '⚠️ URGENT: Your EU Shipments Are At Risk',
+      subject: 'Important: EU VAT Compliance Assessment Results',
       html: `
         <!DOCTYPE html>
         <html>
@@ -246,7 +260,7 @@ function generateEmailContent(riskLevel, email) {
           <div class="container">
             <div class="header">
               <h1>⚠️ Critical IOSS Risk Detected</h1>
-              <p>Your EU shipments are likely being stopped at customs</p>
+              <p>VATpilot has identified compliance issues with your EU shipments</p>
             </div>
             <div class="content">
               <h2>Hello!</h2>
@@ -275,7 +289,7 @@ function generateEmailContent(riskLevel, email) {
               <p>Time is critical - every day of non-compliance increases your risk exposure.</p>
 
               <div class="footer">
-                <p>IOSS Compliance Reporter | Keeping your EU shipments compliant</p>
+                <p>VATpilot | Automating EU VAT compliance for e-commerce</p>
                 <p><small>You received this because you completed our risk assessment at ${new Date().toLocaleDateString()}</small></p>
               </div>
             </div>
@@ -286,7 +300,7 @@ function generateEmailContent(riskLevel, email) {
     }
   } else if (riskLevel === 'MODERATE_RISK') {
     return {
-      subject: '⚠️ IOSS Compliance Gap Detected - Action Required',
+      subject: 'Your IOSS Compliance Assessment Results',
       html: `
         <!DOCTYPE html>
         <html>
@@ -295,7 +309,7 @@ function generateEmailContent(riskLevel, email) {
           <div class="container">
             <div class="header">
               <h1>⚠️ Compliance Gap Detected</h1>
-              <p>Your IOSS setup needs attention</p>
+              <p>VATpilot has identified optimization opportunities in your IOSS setup</p>
             </div>
             <div class="content">
               <h2>Hello!</h2>
@@ -325,7 +339,7 @@ function generateEmailContent(riskLevel, email) {
               <p>Don't let compliance gaps put your business at risk.</p>
 
               <div class="footer">
-                <p>IOSS Compliance Reporter | Automating your EU compliance</p>
+                <p>VATpilot | Your EU compliance automation partner</p>
                 <p><small>You received this because you completed our risk assessment at ${new Date().toLocaleDateString()}</small></p>
               </div>
             </div>
@@ -347,16 +361,16 @@ function generateEmailContent(riskLevel, email) {
         <div class="container">
           <div class="header">
             <h1>✅ Assessment Complete</h1>
-            <p>Your IOSS compliance results</p>
+            <p>Your VATpilot compliance results</p>
           </div>
           <div class="content">
-            <h2>Thank you for using our IOSS Risk Assessment!</h2>
+            <h2>Thank you for using VATpilot's IOSS Risk Assessment!</h2>
             <p>Based on your responses, your current shipping profile appears to be compliant.</p>
             
             <p>We'll keep you updated on any changes to EU VAT regulations that might affect your business.</p>
 
             <div class="footer">
-              <p>IOSS Compliance Reporter | Your EU compliance partner</p>
+              <p>VATpilot | Your EU compliance partner</p>
             </div>
           </div>
         </div>

@@ -1,18 +1,35 @@
 # Changelog
 
-All notable changes to the IOSS Compliance Reporter project will be documented in this file.
+All notable changes to VATpilot will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Planned
-- Backend API implementation
-- User authentication system
-- IOSS report generation features
-- Admin dashboard
-- Database integration
-- API documentation
+- User authentication and dashboard
+- Automated IOSS report generation
+- Multi-tenant SaaS architecture
+- Subscription billing system
+- Advanced analytics and insights
+- API documentation and developer portal
+
+---
+
+## [0.3.0] - 2025-12-02
+
+### Fixed
+- **Database Configuration**: Updated MongoDB connection to use production `vatpilot` database instead of default `test` database
+- **Email Deliverability**: Improved email delivery to Outlook/Hotmail accounts by:
+  - Updated sender name to "VATpilot Support" for better reputation
+  - Added proper email headers including List-Unsubscribe
+  - Implemented email tagging for better categorization
+  - Modified subject lines to be less aggressive for spam filters
+- **Mongoose Compatibility**: Fixed pre-save middleware to work with Mongoose 9.x (removed deprecated `next()` callback pattern)
+
+### Changed
+- **Production Database**: All new leads now save to `vatpilot` database for immediate production data collection
+- **Email Templates**: Enhanced email content structure for better spam filter compatibility
 
 ---
 

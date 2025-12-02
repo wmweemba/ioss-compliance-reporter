@@ -63,9 +63,8 @@ leadSchema.index({ createdAt: -1 })
 leadSchema.index({ riskLevel: 1, createdAt: -1 })
 
 // Pre-save middleware to update timestamps
-leadSchema.pre('save', function(next) {
+leadSchema.pre('save', function() {
   this.updatedAt = Date.now()
-  next()
 })
 
 // Virtual for formatted creation date

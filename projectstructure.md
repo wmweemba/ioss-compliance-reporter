@@ -1,6 +1,6 @@
 # Project Structure
 
-This document outlines the complete folder and file organization for the IOSS Compliance Reporter project.
+This document outlines the complete folder and file organization for VATpilot - the EU VAT compliance automation SaaS.
 
 ## 📁 Root Directory Structure
 

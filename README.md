@@ -1,6 +1,6 @@
-# IOSS Compliance Reporter
+# VATpilot
 
-> A modern MERN stack application for EU VAT IOSS compliance assessment and reporting, specifically designed for dropshippers shipping from outside the EU to EU customers.
+> A modern MERN stack SaaS application for EU VAT IOSS compliance assessment and automated reporting, specifically designed for dropshippers shipping from outside the EU to EU customers.
 
 [![React](https://img.shields.io/badge/React-19.2.0-blue.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF.svg)](https://vitejs.dev/)
@@ -10,16 +10,17 @@
 
 ## 🎯 Project Overview
 
-**Target Audience:** Dropshippers shipping from outside the EU to EU customers
+**Target Audience:** Dropshippers and e-commerce businesses shipping from outside the EU to EU customers
 
-**Primary Goal:** Identify high-risk sellers who are missing IOSS registration and capture their contact information for compliance solutions
+**Primary Goal:** Automate IOSS compliance through intelligent risk assessment and automated reporting solutions
 
 **Key Features:**
 - Multi-step EU VAT risk assessment quiz
 - Real-time IOSS compliance evaluation
-- Email capture for high-risk cases
-- Professional compliance reporting interface
-- Automated risk categorization (Critical/Moderate/Low)
+- Automated email capture for high-risk cases
+- Professional compliance reporting dashboard
+- Intelligent risk categorization (Critical/Moderate/Low)
+- Automated IOSS report generation (planned)
 
 ## 🚀 Tech Stack
 
@@ -199,8 +200,10 @@ pnpm run start
 ```env
 NODE_ENV=development
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/ioss-compliance
-JWT_SECRET=your-super-secret-key
+MONGO_URI=mongodb://localhost:27017/vatpilot
+RESEND_API_KEY=re_your_resend_api_key_here
+FROM_EMAIL="VATpilot <noreply@vatpilot.com>"
+JWT_SECRET=your-super-secret-jwt-key-here
 CORS_ORIGIN=http://localhost:5173
 ```
 
@@ -256,6 +259,7 @@ VITE_API_URL=http://localhost:5000/api
 - **GitHub Issues:** [Create an issue](https://github.com/wmweemba/ioss-compliance-reporter/issues)
 - **Documentation:** See project markdown files
 - **Updates:** Check [changelog.md](./changelog.md)
+- **Website:** VATpilot.com (coming soon)
 
 ## 📄 License
 
@@ -267,7 +271,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Tailwind CSS** for the utility-first styling approach
 - **React Team** for React 19 and concurrent features
 - **Vite Team** for the amazing build tool experience
+- **Resend** for reliable email delivery
 
 ---
 
-**Made with ❤️ for IOSS compliance automation**
+**VATpilot - Automating EU VAT compliance for e-commerce businesses** 🚀

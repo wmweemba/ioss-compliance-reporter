@@ -1,4 +1,4 @@
-# IOSS Compliance Reporter - Email Capture Setup Guide
+# VATpilot - Email Capture Setup Guide
 
 ## 🚀 Quick Setup Instructions
 
@@ -14,10 +14,10 @@ Edit `server/.env` with your values:
 ```env
 NODE_ENV=development
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/ioss-compliance
+MONGO_URI=mongodb://localhost:27017/vatpilot
 CORS_ORIGIN=http://localhost:5173
 RESEND_API_KEY=re_your_actual_api_key_here
-FROM_EMAIL="IOSS Compliance <noreply@yourdomain.com>"
+FROM_EMAIL="VATpilot <noreply@vatpilot.com>"
 ```
 
 #### Client Setup (.env)
