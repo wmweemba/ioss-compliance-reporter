@@ -9,11 +9,16 @@ server/dist/
 build/
 
 # Environment variables
-.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
+
+# Keep template files but ignore production configs
+!.env.development
+!.env.railway
+!.env.netlify
 
 # Logs
 npm-debug.log*

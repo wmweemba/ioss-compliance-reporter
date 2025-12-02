@@ -22,6 +22,13 @@
 - Intelligent risk categorization (Critical/Moderate/Low)
 - Automated IOSS report generation (planned)
 
+## 🌐 Live Demo
+
+- **Frontend**: [https://vatpilot.netlify.app](https://vatpilot.netlify.app) 
+- **Backend API**: [https://your-railway-app.railway.app](https://your-railway-app.railway.app)
+
+*Note: Update these URLs after deployment*
+
 ## 🚀 Tech Stack
 
 ### Frontend (Client)

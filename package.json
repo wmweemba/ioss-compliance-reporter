@@ -1,0 +1,33 @@
+{
+  "name": "vatpilot",
+  "version": "0.3.0",
+  "description": "EU VAT IOSS compliance assessment and automated reporting SaaS platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "cd server && npm run dev",
+    "client:dev": "cd client && npm run dev", 
+    "build": "cd server && npm ci --only=production",
+    "start": "cd server && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "env:dev": "node scripts/env.js development",
+    "env:prod": "node scripts/env.js production",
+    "setup": "npm install && cd server && npm install && cd ../client && npm install",
+    "start:dev": "npm run env:dev && npm run dev",
+    "start:prod": "npm run env:prod && concurrently \"cd server && npm run start:prod\" \"cd client && npm run build && npm run preview\""
+  },
+  "keywords": [
+    "vat",
+    "ioss", 
+    "compliance",
+    "dropshipping",
+    "eu-tax",
+    "saas"
+  ],
+  "author": "VATpilot",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
