@@ -50,21 +50,17 @@ BCRYPT_SALT_ROUNDS=12
 In Netlify dashboard, go to Site settings → Environment variables:
 
 ```bash
-VITE_API_URL=https://your-railway-app.railway.app/api
+VITE_API_URL=https://ioss-compliance-reporter-production.up.railway.app/api
 VITE_NODE_ENV=production
 ```
 
-**Important**: Replace `your-railway-app.railway.app` with your actual Railway URL.
-
 ### 3. Update CORS Configuration
 
-After deploying to Netlify, update your Railway environment variables:
+The CORS configuration is already set correctly in Railway:
 
 ```bash
-CORS_ORIGIN=https://your-netlify-site.netlify.app
+CORS_ORIGIN=https://vatpilot.netlify.app
 ```
-
-Replace with your actual Netlify URL.
 
 ---
 
@@ -72,7 +68,7 @@ Replace with your actual Netlify URL.
 
 ### 1. Test the Application
 
-1. **Health Check**: Visit `https://your-railway-app.railway.app/api/health`
+1. **Health Check**: Visit `https://ioss-compliance-reporter-production.up.railway.app/api/health`
 2. **Complete Quiz**: Test the full flow on your Netlify site
 3. **Check Database**: Verify leads are saving to MongoDB Atlas
 4. **Email Testing**: Confirm emails are being sent via Resend

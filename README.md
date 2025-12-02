@@ -25,9 +25,8 @@
 ## 🌐 Live Demo
 
 - **Frontend**: [https://vatpilot.netlify.app](https://vatpilot.netlify.app) 
-- **Backend API**: [https://your-railway-app.railway.app](https://your-railway-app.railway.app)
-
-*Note: Update these URLs after deployment*
+- **Backend API**: [https://ioss-compliance-reporter-production.up.railway.app](https://ioss-compliance-reporter-production.up.railway.app)
+- **Health Check**: [https://ioss-compliance-reporter-production.up.railway.app/api/health](https://ioss-compliance-reporter-production.up.railway.app/api/health)
 
 ## 🚀 Tech Stack
 
