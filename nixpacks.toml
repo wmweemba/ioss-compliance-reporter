@@ -1,12 +1,10 @@
 # Nixpacks configuration for VATpilot Railway deployment
 
 [phases.setup]
-nixPkgs = ["nodejs_20", "npm"]
+nixPkgs = ["nodejs_20"]
 
-[phases.build] 
-cmds = [
-  "cd server && npm ci --only=production"
-]
+[phases.install]
+cmds = ["cd server && npm ci --omit=dev"]
 
 [phases.start]
 cmd = "cd server && npm start"
