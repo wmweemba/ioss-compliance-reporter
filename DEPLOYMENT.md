@@ -9,7 +9,7 @@ This guide covers deploying VATpilot to Railway (backend) and Netlify (frontend)
 1. **Create Railway Account**: Sign up at [railway.app](https://railway.app)
 2. **Create New Project**: Click "New Project" → "Deploy from GitHub repo"
 3. **Connect Repository**: Select your `ioss-compliance-reporter` repository
-4. **Keep Root Directory**: Use the root directory (Railway will automatically detect the monorepo structure)
+4. **Root Directory**: Keep root directory (nixpacks.toml will handle server subdirectory)
 
 ### 2. Configure Environment Variables
 

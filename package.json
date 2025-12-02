@@ -8,7 +8,7 @@
     "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
     "server:dev": "cd server && npm run dev",
     "client:dev": "cd client && npm run dev", 
-    "build": "cd server && npm ci --omit=dev",
+    "build": "cd server && npm install --omit=dev",
     "start": "cd server && npm start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "env:dev": "node scripts/env.js development",

@@ -1,12 +1,10 @@
 # Nixpacks configuration for VATpilot Railway deployment
+# This file tells Railway to build from the server subdirectory
 
-[phases.setup]
-nixPkgs = ["nodejs_20"]
+[build]
+cmd = "cd server && npm install --omit=dev"
 
-[phases.install]
-cmds = ["cd server && npm ci --omit=dev"]
-
-[phases.start]
+[start] 
 cmd = "cd server && npm start"
 
 [variables]
