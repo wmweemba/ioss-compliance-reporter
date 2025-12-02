@@ -24,6 +24,10 @@ const emailSchema = z.object({
  */
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://ioss-compliance-reporter-production.up.railway.app/api'
 
+// Debug log for production troubleshooting
+console.log('API_BASE_URL:', API_BASE_URL)
+console.log('VITE_API_URL env var:', import.meta.env.VITE_API_URL)
+
 /**
  * Quiz questions configuration
  */
@@ -180,8 +184,13 @@ export default function RiskQuiz() {
         source: 'risk_quiz'
       }
 
-      // Send to backend API
-      const response = await axios.post(`${API_BASE_URL}/leads`, payload, {
+      // Send to backend API - using explicit absolute URL
+      const fullApiUrl = 'https://ioss-compliance-reporter-production.up.railway.app/api/leads'
+      console.log('Making API call to:', fullApiUrl)
+      console.log('API_BASE_URL was:', API_BASE_URL)
+      console.log('Payload:', payload)
+      
+      const response = await axios.post(fullApiUrl, payload, {
         headers: {
           'Content-Type': 'application/json'
         },

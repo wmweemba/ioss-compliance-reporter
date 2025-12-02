@@ -6,11 +6,12 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Redirect rules for SPA
+# Redirect rules for SPA (only for internal paths, not external URLs)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
 
 # Headers for security and performance
 [[headers]]
