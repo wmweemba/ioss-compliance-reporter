@@ -10,7 +10,14 @@ dotenv.config()
 
 // Initialize Express app
 const app = express()
-const PORT = process.env.PORT || 5000
+const PORT = parseInt(process.env.PORT) || 5000
+
+// Log environment status for debugging
+console.log('🌍 Environment:', process.env.NODE_ENV || 'development')
+console.log('🚀 Starting server on port:', PORT)
+console.log('🔧 CORS Origin:', process.env.CORS_ORIGIN || 'http://localhost:5173')
+console.log('📧 From Email:', process.env.FROM_EMAIL || 'not set')
+console.log('🗄️ MongoDB URI:', process.env.MONGO_URI ? 'configured' : 'missing')
 
 // Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY)
