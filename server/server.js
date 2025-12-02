@@ -18,9 +18,16 @@ console.log('🚀 Starting server on port:', PORT)
 console.log('🔧 CORS Origin:', process.env.CORS_ORIGIN || 'http://localhost:5173')
 console.log('📧 From Email:', process.env.FROM_EMAIL || 'not set')
 console.log('🗄️ MongoDB URI:', process.env.MONGO_URI ? 'configured' : 'missing')
+console.log('📧 Resend API Key:', process.env.RESEND_API_KEY ? 'configured' : 'missing')
 
-// Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend (only if API key is available)
+let resend = null
+if (process.env.RESEND_API_KEY) {
+  resend = new Resend(process.env.RESEND_API_KEY)
+  console.log('✅ Resend email service initialized')
+} else {
+  console.log('⚠️ Resend API key not found - email functionality will be disabled')
+}
 
 // Middleware
 app.use(cors({
@@ -32,12 +39,17 @@ app.use(express.urlencoded({ extended: true }))
 
 // MongoDB Connection
 const connectDB = async () => {
+  if (!process.env.MONGO_URI) {
+    console.log('⚠️ MongoDB URI not found - database functionality will be limited')
+    return
+  }
+
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI)
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`)
   } catch (error) {
     console.error('❌ MongoDB Connection Error:', error.message)
-    process.exit(1)
+    console.log('⚠️ Server will continue without database connection')
   }
 }
 
@@ -118,54 +130,67 @@ app.post('/api/leads', async (req, res) => {
     // Prepare email content based on risk level
     const emailContent = generateEmailContent(riskLevel, email)
 
-    // Send email via Resend
-    try {
-      const emailResponse = await resend.emails.send({
-        from: process.env.FROM_EMAIL || 'VATpilot Support <onboarding@resend.dev>',
-        to: [email],
-        subject: emailContent.subject,
-        html: emailContent.html,
-        headers: {
-          'X-Entity-Ref-ID': savedLead._id.toString(),
-          'List-Unsubscribe': '<mailto:unsubscribe@resend.dev>',
-        },
-        tags: [
-          {
-            name: 'category',
-            value: 'risk-assessment'
+    // Send email via Resend (if available)
+    if (resend) {
+      try {
+        const emailResponse = await resend.emails.send({
+          from: process.env.FROM_EMAIL || 'VATpilot Support <onboarding@resend.dev>',
+          to: [email],
+          subject: emailContent.subject,
+          html: emailContent.html,
+          headers: {
+            'X-Entity-Ref-ID': savedLead._id.toString(),
+            'List-Unsubscribe': '<mailto:unsubscribe@resend.dev>',
           },
-          {
-            name: 'risk-level',
-            value: riskLevel.toLowerCase()
-          }
-        ]
-      })
+          tags: [
+            {
+              name: 'category',
+              value: 'risk-assessment'
+            },
+            {
+              name: 'risk-level',
+              value: riskLevel.toLowerCase()
+            }
+          ]
+        })
 
-      // Update lead with email sent status
-      savedLead.emailSent = true
-      savedLead.emailSentAt = new Date()
-      await savedLead.save()
+        // Update lead with email sent status
+        savedLead.emailSent = true
+        savedLead.emailSentAt = new Date()
+        await savedLead.save()
 
-      console.log(`✅ Email sent successfully to ${email}:`, emailResponse.id)
+        console.log(`✅ Email sent successfully to ${email}:`, emailResponse.id)
 
-      // Return success response
-      res.status(201).json({
-        success: true,
-        message: 'Lead created and email sent successfully',
-        leadId: savedLead._id,
-        emailId: emailResponse.id,
-        riskLevel: savedLead.riskLevel
-      })
+        // Return success response
+        res.status(201).json({
+          success: true,
+          message: 'Lead created and email sent successfully',
+          leadId: savedLead._id,
+          emailId: emailResponse.id,
+          riskLevel: savedLead.riskLevel
+        })
 
-    } catch (emailError) {
-      console.error('❌ Email sending failed:', emailError)
+      } catch (emailError) {
+        console.error('❌ Email sending failed:', emailError)
+        
+        // Still return success for lead creation, but note email failure
+        res.status(201).json({
+          success: true,
+          message: 'Lead created successfully, but email sending failed',
+          leadId: savedLead._id,
+          emailError: 'Failed to send welcome email',
+          riskLevel: savedLead.riskLevel
+        })
+      }
+    } else {
+      // Email service not available
+      console.log('⚠️ Email service not configured - skipping email send')
       
-      // Still return success for lead creation, but note email failure
       res.status(201).json({
         success: true,
-        message: 'Lead created successfully, but email sending failed',
+        message: 'Lead created successfully (email service unavailable)',
         leadId: savedLead._id,
-        emailError: 'Failed to send welcome email',
+        emailError: 'Email service not configured',
         riskLevel: savedLead.riskLevel
       })
     }
