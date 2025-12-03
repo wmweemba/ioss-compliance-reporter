@@ -21,7 +21,13 @@ const API_CONFIG = {
 const getApiBaseUrl = () => {
   // First priority: explicit environment variable
   if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL
+    const url = import.meta.env.VITE_API_URL.trim()
+    // Ensure the URL has a protocol
+    if (url && !url.startsWith('http')) {
+      console.warn('⚠️ VITE_API_URL missing protocol, adding https://')
+      return `https://${url}`
+    }
+    return url
   }
   
   // Second priority: environment-based default
@@ -48,16 +54,20 @@ const validateEnvironment = () => {
     PROD: isProduction
   })
   
+  // Validate URL format
+  if (!API_BASE_URL.startsWith('http')) {
+    console.error('❌ Invalid API URL - missing protocol:', API_BASE_URL)
+    throw new Error(`Invalid API URL: ${API_BASE_URL}`)
+  }
+  
   // Warn if using fallback configuration
   if (!import.meta.env.VITE_API_URL) {
     console.warn('⚠️ VITE_API_URL not set, using environment default:', API_BASE_URL)
   }
 }
 
-// Validate environment in development
-if (isDevelopment) {
-  validateEnvironment()
-}
+// Always validate environment to catch production issues
+validateEnvironment()
 
 // Create axios instance with default configuration
 const apiClient = axios.create({
