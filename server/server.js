@@ -129,14 +129,21 @@ app.post('/api/leads', async (req, res) => {
       }
     }
 
+    console.log('💾 Creating new lead with data:', leadData)
     const newLead = new Lead(leadData)
+    console.log('💾 Saving lead to database...')
     const savedLead = await newLead.save()
 
+    console.log('📝 Lead saved successfully:', savedLead._id)
+
     // Prepare email content based on risk level
+    console.log('📧 Generating email content for risk level:', riskLevel)
     const emailContent = generateEmailContent(riskLevel, email)
+    console.log('📧 Email content generated successfully')
 
     // Send email via Resend (if available)
     if (resend) {
+      console.log('📧 Resend service available, attempting to send email')
       try {
         const emailResponse = await resend.emails.send({
           from: process.env.FROM_EMAIL || 'VATpilot Support <onboarding@resend.dev>',
@@ -201,7 +208,12 @@ app.post('/api/leads', async (req, res) => {
     }
 
   } catch (error) {
-    console.error('❌ Lead creation error:', error)
+    console.error('❌ Lead creation error:', {
+      message: error.message,
+      name: error.name,
+      code: error.code,
+      stack: error.stack
+    })
 
     // Handle MongoDB duplicate key error (11000)
     if (error.code === 11000) {
@@ -221,6 +233,9 @@ app.post('/api/leads', async (req, res) => {
       })
     }
 
+    // Enhanced error logging for production debugging
+    console.error('Full error object:', JSON.stringify(error, null, 2))
+    
     // Generic server error
     res.status(500).json({
       success: false,
