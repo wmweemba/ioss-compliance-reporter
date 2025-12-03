@@ -21,12 +21,20 @@ const API_CONFIG = {
 const getApiBaseUrl = () => {
   // First priority: explicit environment variable
   if (import.meta.env.VITE_API_URL) {
-    const url = import.meta.env.VITE_API_URL.trim()
+    let url = import.meta.env.VITE_API_URL.trim()
+    
     // Ensure the URL has a protocol
     if (url && !url.startsWith('http')) {
       console.warn('⚠️ VITE_API_URL missing protocol, adding https://')
-      return `https://${url}`
+      url = `https://${url}`
     }
+    
+    // Ensure the URL has /api path if it's missing
+    if (!url.endsWith('/api')) {
+      console.warn('⚠️ VITE_API_URL missing /api path, adding it')
+      url = url.endsWith('/') ? `${url}api` : `${url}/api`
+    }
+    
     return url
   }
   
