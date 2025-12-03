@@ -25,8 +25,8 @@
 ## 🌐 Live Demo
 
 - **Frontend**: [https://vatpilot.netlify.app](https://vatpilot.netlify.app) 
-- **Backend API**: [https://ioss-compliance-reporter-production.up.railway.app](https://ioss-compliance-reporter-production.up.railway.app)
-- **Health Check**: [https://ioss-compliance-reporter-production.up.railway.app/api/health](https://ioss-compliance-reporter-production.up.railway.app/api/health)
+- **Backend API**: [https://vatpilot.onrender.com](https://vatpilot.onrender.com)
+- **Health Check**: [https://vatpilot.onrender.com/api/health](https://vatpilot.onrender.com/api/health)
 
 ## 🚀 Tech Stack
 
@@ -192,13 +192,15 @@ pnpm run build
 # Deploy dist/ folder
 ```
 
-### Backend (Recommended: Railway/Render)
+### Backend (Recommended: Render.com)
 ```bash
 cd server
-# Set NODE_ENV=production
-# Configure MongoDB connection
+# Set NODE_ENV=production  
+# Configure MongoDB connection and environment variables
 pnpm run start
 ```
+
+**Production Deployment**: Currently hosted on [Render.com](https://render.com) for reliable environment variable handling and excellent uptime.
 
 ### Environment Variables
 

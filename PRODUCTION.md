@@ -6,18 +6,22 @@
 - **Live Site**: https://vatpilot.netlify.app/
 - **Status**: ✅ Deployed and running
 
-### **Backend API (Railway)**  
-- **API Base**: https://ioss-compliance-reporter-production.up.railway.app
-- **Health Check**: https://ioss-compliance-reporter-production.up.railway.app/api/health
-- **API Endpoints**: https://ioss-compliance-reporter-production.up.railway.app/api/
-- **Status**: ✅ Deployed and running on port 8080
+### **Backend API (Render)**  
+- **API Base**: https://vatpilot.onrender.com
+- **Health Check**: https://vatpilot.onrender.com/api/health
+- **Detailed Health**: https://vatpilot.onrender.com/api/health/detailed
+- **API Endpoints**: https://vatpilot.onrender.com/api/
+- **Status**: ✅ Deployed and running on port 10000
 
 ## 🔧 **Production Configuration**
 
-### **Environment Variables**
-- ✅ All Railway environment variables configured
-- ✅ CORS set to https://vatpilot.netlify.app  
-- ✅ MongoDB Atlas connected to `vatpilot` database
+### **Migration from Railway to Render (December 2025)**
+- ✅ **Successfully migrated** from Railway to Render.com due to environment variable injection issues
+- ✅ **Environment Variables**: All Render environment variables properly configured and working
+- ✅ **CORS**: Set to https://vatpilot.netlify.app  
+- ✅ **Database**: MongoDB Atlas connected to `vatpilot` database (connection now stable)
+- ✅ **Email Service**: Resend API integration working properly
+- ✅ **Performance**: Improved reliability and uptime on Render platform
 - ✅ Resend email service configured
 
 ### **Database**

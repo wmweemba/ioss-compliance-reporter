@@ -16,6 +16,42 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.4.0] - 2025-12-03
+
+### Changed
+- **Platform Migration**: Successfully migrated backend from Railway to Render.com
+  - **New Production URL**: https://vatpilot.onrender.com
+  - Resolved persistent Railway environment variable injection issues
+  - Improved deployment reliability and performance
+  - Better free tier limits for startup development
+
+### Fixed
+- **Environment Variable Issues**: Completely resolved production deployment problems
+  - ✅ MongoDB connection now working reliably (was failing on Railway)
+  - ✅ Resend email service properly configured (was missing API keys on Railway) 
+  - ✅ All environment variables now inject correctly into Node.js process
+  - ✅ No more "Operation `leads.findOne()` buffering timed out" errors
+  
+- **Production Configuration**: Cleaned up platform-specific code
+  - Removed Railway-specific fallback environment variable patterns
+  - Updated client API configuration to use Render endpoint
+  - Streamlined server startup without Railway debugging overhead
+  - Enhanced platform detection for better multi-cloud support
+
+### Removed
+- **Railway Dependencies**: Clean removal of Railway-specific files and configurations
+  - Deleted `railway-start.js`, `railway.json`, and `.env.railway` files
+  - Removed Railway-specific environment variable fallbacks
+  - Updated nixpacks.toml to use standard Node.js startup commands
+
+### Technical Improvements
+- **Deployment Reliability**: Render provides more consistent environment variable injection
+- **Better Monitoring**: Health check endpoints now show "healthy" database and email services
+- **Simplified Architecture**: Removed complex Railway workarounds and debugging code
+- **Platform Agnostic**: Server now supports multiple deployment platforms (Render, Vercel, Railway)
+
+---
+
 ## [0.3.1] - 2025-12-03
 
 ### Fixed

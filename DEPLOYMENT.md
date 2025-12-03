@@ -1,30 +1,34 @@
 # Deployment Guide - VATpilot
 
-This guide covers deploying VATpilot to Railway (backend) and Netlify (frontend).
+This guide covers deploying VATpilot to Render.com (backend) and Netlify (frontend).
 
-## 🚀 Backend Deployment (Railway)
+## 🚀 Backend Deployment (Render.com)
 
-### 1. Prepare Railway Project
+### 1. Prepare Render Project
 
-1. **Create Railway Account**: Sign up at [railway.app](https://railway.app)
-2. **Create New Project**: Click "New Project" → "Deploy from GitHub repo"
+1. **Create Render Account**: Sign up at [render.com](https://render.com)
+2. **Create New Web Service**: Dashboard → "New" → "Web Service"
 3. **Connect Repository**: Select your `ioss-compliance-reporter` repository
-4. **Root Directory**: Keep root directory (nixpacks.toml will handle server subdirectory)
+4. **Configure Service**:
+   - **Name**: `vatpilot-backend` (or your preferred name)
+   - **Environment**: `Node`
+   - **Build Command**: `cd server && npm install`
+   - **Start Command**: `cd server && npm start`
+   - **Health Check Path**: `/api/health`
 
 ### 2. Configure Environment Variables
 
-In Railway dashboard, go to your service → Variables tab and add:
+In Render dashboard, go to your service → Environment → Add Environment Variable:
 
 ```bash
 NODE_ENV=production
-MONGO_URI=mongodb+srv://wmweemba_db_user:S3k3l3t1*@ioss-compliance-reporte.lafpxt7.mongodb.net/vatpilot?appName=VATpilot-SaaS
+MONGO_URI=mongodb+srv://your-username:your-password@your-cluster.mongodb.net/vatpilot
 CORS_ORIGIN=https://vatpilot.netlify.app
-RESEND_API_KEY=re_2R5gDWVK_6VeKdpmdvnxPkCZq9kSsL18d
-FROM_EMAIL="VATpilot Support <onboarding@resend.dev>"
-JWT_SECRET=ioss-compliance-super-secret-jwt-key-2025
-JWT_EXPIRE=30d
-BCRYPT_SALT_ROUNDS=12
+RESEND_API_KEY=re_your_actual_resend_api_key
+FROM_EMAIL=VATpilot Support <onboarding@resend.dev>
 ```
+
+**Security Note**: Never commit actual credentials to git. Use your actual MongoDB and Resend credentials.
 
 ### 3. Deploy
 
