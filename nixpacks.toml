@@ -5,7 +5,17 @@
 cmd = "cd server && npm install --omit=dev"
 
 [start] 
-cmd = "cd server && npm start"
+cmd = "cd server && node railway-start.js"
 
 [variables]
 NODE_ENV = "production"
+
+# Force Railway to inject service environment variables
+[phases.setup]
+dependsOn = ["install"]
+
+[phases.install]
+cmds = ["echo 'Installing dependencies'"]
+
+[phases.build]
+dependsOn = ["install"]
