@@ -24,6 +24,15 @@ console.log('CORS_ORIGIN present:', !!process.env.CORS_ORIGIN)
 console.log('All env vars:', Object.keys(process.env).filter(key => key.startsWith('MONGO') || key.startsWith('RESEND') || key.startsWith('FROM') || key.startsWith('CORS') || key.startsWith('JWT') || key.startsWith('NODE') || key.startsWith('BCRYPT')))
 console.log('All Railway vars:', Object.keys(process.env).filter(key => key.includes('RAILWAY')))
 console.log('Total env vars count:', Object.keys(process.env).length)
+console.log('Complete env dump (first 10):', Object.keys(process.env).slice(0, 10))
+console.log('Looking for custom vars:', Object.keys(process.env).filter(key => 
+  key.includes('MONGO') || 
+  key.includes('RESEND') || 
+  key.includes('FROM') || 
+  key.includes('CORS') || 
+  key.includes('JWT') || 
+  key.includes('BCRYPT')
+))
 
 // Initialize Express app
 const app = express()
@@ -38,7 +47,24 @@ if (process.env.RAILWAY_ENVIRONMENT) {
 // Determine CORS origin based on environment
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultCorsOrigin = isProduction ? 'https://vatpilot.netlify.app' : 'http://localhost:5173'
-const corsOrigin = process.env.CORS_ORIGIN || defaultCorsOrigin
+
+// Railway environment variable fallback - try different variable name patterns
+const corsOrigin = process.env.CORS_ORIGIN || 
+                   process.env.RAILWAY_CORS_ORIGIN || 
+                   defaultCorsOrigin
+
+// Try to access MongoDB URI with different patterns
+const mongoUri = process.env.MONGO_URI || 
+                 process.env.RAILWAY_MONGO_URI || 
+                 process.env.DATABASE_URL
+
+// Try to access Resend API key with different patterns  
+const resendApiKey = process.env.RESEND_API_KEY || 
+                     process.env.RAILWAY_RESEND_API_KEY
+
+console.log('🔍 Fallback check - MONGO_URI:', !!mongoUri)
+console.log('🔍 Fallback check - RESEND_API_KEY:', !!resendApiKey)
+console.log('🔍 Fallback check - CORS_ORIGIN:', corsOrigin)
 
 // Log environment status for debugging
 console.log('🌍 Environment:', process.env.NODE_ENV || 'development')
@@ -50,8 +76,8 @@ console.log('📧 Resend API Key:', process.env.RESEND_API_KEY ? 'configured' : 
 
 // Initialize Resend (only if API key is available)
 let resend = null
-if (process.env.RESEND_API_KEY) {
-  resend = new Resend(process.env.RESEND_API_KEY)
+if (resendApiKey) {
+  resend = new Resend(resendApiKey)
   console.log('✅ Resend email service initialized')
 } else {
   console.log('⚠️ Resend API key not found - email functionality will be disabled')
@@ -67,13 +93,14 @@ app.use(express.urlencoded({ extended: true }))
 
 // MongoDB Connection
 const connectDB = async () => {
-  if (!process.env.MONGO_URI) {
+  if (!mongoUri) {
     console.log('⚠️ MongoDB URI not found - database functionality will be limited')
     return
   }
 
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI)
+    console.log('🔗 Attempting MongoDB connection with URI pattern:', mongoUri.substring(0, 20) + '...')
+    const conn = await mongoose.connect(mongoUri)
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`)
   } catch (error) {
     console.error('❌ MongoDB Connection Error:', error.message)
