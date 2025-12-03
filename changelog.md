@@ -16,6 +16,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.3.1] - 2025-12-03
+
+### Fixed
+- **API Environment Configuration**: Implemented comprehensive environment-aware API system
+  - Fixed hardcoded production API URLs in RiskQuiz component
+  - Created centralized API utility with automatic dev/prod switching
+  - Added environment validation and helpful development logging
+  - Resolved CORS issues in development environment
+  
+- **Railway Deployment Configuration**: Enhanced production environment variable handling
+  - Added Railway environment variable fallback patterns
+  - Implemented multiple naming convention detection (RAILWAY_ prefix, DATABASE_URL)
+  - Added comprehensive debugging for deployment troubleshooting
+  - Enhanced error logging with detailed stack traces and environment context
+
+- **Development Workflow**: Improved environment file management
+  - Removed redundant .env files (server/.env.development, client/.env.development)
+  - Streamlined environment configuration with clear template references
+  - Maintained deployment reference files (.env.railway, .env.netlify)
+
+### Added
+- **Health Check Endpoints**: Comprehensive system diagnostics for production debugging
+  - `/api/health/detailed` - Full system status including database and email service
+  - `/api/test/leads` - Dry-run testing endpoint for lead creation validation
+  - Environment variable detection and validation logging
+  - MongoDB connection status and Resend service availability checks
+
+### Technical Improvements
+- Enhanced API URL construction with automatic /api path validation
+- Railway-specific environment variable detection and logging
+- Improved error handling with production-safe error messages
+- Better development vs production environment detection
+
+---
+
 ## [0.3.0] - 2025-12-02
 
 ### Fixed
