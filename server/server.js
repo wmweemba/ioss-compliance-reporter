@@ -10,38 +10,29 @@ if (process.env.NODE_ENV !== 'production') {
   dotenv.config()
   console.log('🔧 Loading .env file in development')
 } else {
-  console.log('🚂 Production mode - relying on Railway environment variables')
+  console.log('🚀 Production mode - using platform environment variables')
 }
 
-// Railway environment variable debugging
-console.log('🔧 Railway Environment Check:')
+// Environment variable validation
+console.log('🔧 Environment Check:')
 console.log('NODE_ENV:', process.env.NODE_ENV)
 console.log('PORT:', process.env.PORT)
 console.log('MONGO_URI present:', !!process.env.MONGO_URI)
 console.log('RESEND_API_KEY present:', !!process.env.RESEND_API_KEY)
 console.log('FROM_EMAIL present:', !!process.env.FROM_EMAIL)
 console.log('CORS_ORIGIN present:', !!process.env.CORS_ORIGIN)
-console.log('All env vars:', Object.keys(process.env).filter(key => key.startsWith('MONGO') || key.startsWith('RESEND') || key.startsWith('FROM') || key.startsWith('CORS') || key.startsWith('JWT') || key.startsWith('NODE') || key.startsWith('BCRYPT')))
-console.log('All Railway vars:', Object.keys(process.env).filter(key => key.includes('RAILWAY')))
-console.log('Total env vars count:', Object.keys(process.env).length)
-console.log('Complete env dump (first 10):', Object.keys(process.env).slice(0, 10))
-console.log('Looking for custom vars:', Object.keys(process.env).filter(key => 
-  key.includes('MONGO') || 
-  key.includes('RESEND') || 
-  key.includes('FROM') || 
-  key.includes('CORS') || 
-  key.includes('JWT') || 
-  key.includes('BCRYPT')
-))
 
 // Initialize Express app
 const app = express()
 const PORT = parseInt(process.env.PORT) || 5000
 
-// Ensure Railway port binding
-if (process.env.RAILWAY_ENVIRONMENT) {
-  console.log('🚂 Railway environment detected')
-  console.log('Railway PORT:', process.env.PORT)
+// Platform detection
+const platform = process.env.RENDER ? 'Render' : 
+                 process.env.RAILWAY_ENVIRONMENT ? 'Railway' : 
+                 process.env.VERCEL ? 'Vercel' : 'Local'
+console.log(`🌐 Platform detected: ${platform}`)
+if (process.env.PORT) {
+  console.log('Platform PORT:', process.env.PORT)
 }
 
 // Determine CORS origin based on environment

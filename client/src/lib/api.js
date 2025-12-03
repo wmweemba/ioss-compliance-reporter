@@ -14,7 +14,7 @@ const isProduction = import.meta.env.PROD
 // API URL configuration with fallbacks
 const API_CONFIG = {
   development: 'http://localhost:5000/api',
-  production: 'https://ioss-compliance-reporter-production.up.railway.app/api'
+  production: 'https://vatpilot.onrender.com/api'
 }
 
 // Get the correct API base URL based on environment

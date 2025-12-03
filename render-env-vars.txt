@@ -1,0 +1,14 @@
+# Copy these environment variables to Render Dashboard
+# Go to: Your Service > Environment > Add Environment Variable
+
+MONGO_URI=mongodb+srv://your-mongodb-connection-string
+RESEND_API_KEY=re_your-resend-api-key
+FROM_EMAIL=VATpilot Support <your-email@yourdomain.com>
+CORS_ORIGIN=https://vatpilot.netlify.app
+NODE_ENV=production
+
+# Notes:
+# - Get MONGO_URI from MongoDB Atlas
+# - Get RESEND_API_KEY from Resend Dashboard
+# - FROM_EMAIL should be verified domain in Resend
+# - CORS_ORIGIN is your Netlify frontend URL
