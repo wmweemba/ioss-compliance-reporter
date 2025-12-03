@@ -70,6 +70,178 @@ app.get('/api/health', (req, res) => {
   })
 })
 
+// Detailed system health check route
+app.get('/api/health/detailed', async (req, res) => {
+  const healthStatus = {
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    port: process.env.PORT || PORT,
+    services: {
+      database: 'unknown',
+      email: 'unknown'
+    },
+    configuration: {
+      mongoUri: process.env.MONGO_URI ? 'configured' : 'missing',
+      resendApiKey: process.env.RESEND_API_KEY ? 'configured' : 'missing',
+      fromEmail: process.env.FROM_EMAIL ? 'configured' : 'missing',
+      corsOrigin: process.env.CORS_ORIGIN ? 'configured' : 'missing',
+      jwtSecret: process.env.JWT_SECRET ? 'configured' : 'missing'
+    },
+    versions: {
+      node: process.version,
+      platform: process.platform
+    }
+  }
+
+  // Test database connection
+  try {
+    if (mongoose.connection.readyState === 1) {
+      healthStatus.services.database = 'connected'
+      // Test a simple database operation
+      const testQuery = await mongoose.connection.db.admin().ping()
+      if (testQuery.ok === 1) {
+        healthStatus.services.database = 'healthy'
+      }
+    } else if (mongoose.connection.readyState === 2) {
+      healthStatus.services.database = 'connecting'
+    } else {
+      healthStatus.services.database = 'disconnected'
+    }
+  } catch (error) {
+    healthStatus.services.database = `error: ${error.message}`
+  }
+
+  // Test email service
+  if (resend) {
+    healthStatus.services.email = 'configured'
+  } else {
+    healthStatus.services.email = 'not configured'
+  }
+
+  // Determine overall status
+  const hasErrors = Object.values(healthStatus.configuration).includes('missing') || 
+                   healthStatus.services.database.startsWith('error') ||
+                   healthStatus.services.database === 'disconnected'
+
+  if (hasErrors) {
+    healthStatus.status = 'DEGRADED'
+  }
+
+  res.json(healthStatus)
+})
+
+// Test endpoint for leads creation (dry-run)
+app.post('/api/test/leads', async (req, res) => {
+  try {
+    console.log('🧪 TEST: Received lead test request:', req.body)
+    
+    const { email, riskLevel, userAnswers, source = 'test' } = req.body
+
+    // Test validation
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required',
+        test: 'validation_failed'
+      })
+    }
+
+    const validRiskLevels = ['CRITICAL_RISK', 'MODERATE_RISK', 'LOW_RISK']
+    if (!validRiskLevels.includes(riskLevel)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid risk level',
+        test: 'validation_failed'
+      })
+    }
+
+    console.log('🧪 TEST: Validation passed')
+
+    // Test database connection
+    let dbTest = 'unknown'
+    try {
+      if (mongoose.connection.readyState === 1) {
+        console.log('🧪 TEST: Database connection active')
+        dbTest = 'connected'
+        
+        // Test Lead model without saving
+        const testLead = new Lead({
+          email: email.toLowerCase().trim(),
+          riskLevel,
+          source,
+          metadata: {
+            userAnswers,
+            ipAddress: req.ip || req.connection.remoteAddress,
+            userAgent: req.get('User-Agent')
+          }
+        })
+        
+        // Validate without saving
+        await testLead.validate()
+        console.log('🧪 TEST: Lead model validation passed')
+        dbTest = 'model_valid'
+        
+      } else {
+        console.log('🧪 TEST: Database not connected')
+        dbTest = 'disconnected'
+      }
+    } catch (error) {
+      console.error('🧪 TEST: Database error:', error)
+      dbTest = `error: ${error.message}`
+    }
+
+    // Test email content generation
+    let emailTest = 'unknown'
+    try {
+      console.log('🧪 TEST: Generating email content')
+      const emailContent = generateEmailContent(riskLevel, email)
+      console.log('🧪 TEST: Email content generated successfully')
+      emailTest = 'content_generated'
+      
+      if (resend) {
+        console.log('🧪 TEST: Resend service available')
+        emailTest = 'service_available'
+      } else {
+        console.log('🧪 TEST: Resend service not configured')
+        emailTest = 'service_missing'
+      }
+    } catch (error) {
+      console.error('🧪 TEST: Email content error:', error)
+      emailTest = `error: ${error.message}`
+    }
+
+    res.json({
+      success: true,
+      message: 'Test completed successfully',
+      test: 'dry_run',
+      results: {
+        database: dbTest,
+        email: emailTest,
+        validation: 'passed',
+        mongoose_state: mongoose.connection.readyState,
+        environment: process.env.NODE_ENV || 'development'
+      },
+      receivedData: {
+        email,
+        riskLevel,
+        userAnswers,
+        source
+      }
+    })
+
+  } catch (error) {
+    console.error('🧪 TEST: Unexpected error:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Test failed with error',
+      test: 'error',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    })
+  }
+})
+
 /**
  * POST /api/leads - Create new lead from risk quiz
  * Captures email, saves to MongoDB, and sends welcome email
