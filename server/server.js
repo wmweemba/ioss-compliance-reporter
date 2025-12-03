@@ -50,27 +50,41 @@ const defaultCorsOrigin = isProduction ? 'https://vatpilot.netlify.app' : 'http:
 
 // Railway environment variable fallback - try different variable name patterns
 const corsOrigin = process.env.CORS_ORIGIN || 
+                   process.env.VATPILOT_CORS_ORIGIN ||
                    process.env.RAILWAY_CORS_ORIGIN || 
                    defaultCorsOrigin
 
 // Try to access MongoDB URI with different patterns
 const mongoUri = process.env.MONGO_URI || 
+                 process.env.VATPILOT_MONGO_URI ||
                  process.env.RAILWAY_MONGO_URI || 
                  process.env.DATABASE_URL
 
 // Try to access Resend API key with different patterns  
 const resendApiKey = process.env.RESEND_API_KEY || 
+                     process.env.VATPILOT_RESEND_API_KEY ||
                      process.env.RAILWAY_RESEND_API_KEY
+
+// Try to access other environment variables with prefixes
+const fromEmail = process.env.FROM_EMAIL || 
+                  process.env.VATPILOT_FROM_EMAIL ||
+                  '"VATpilot Support <onboarding@resend.dev>"'
+
+const jwtSecret = process.env.JWT_SECRET || 
+                  process.env.VATPILOT_JWT_SECRET ||
+                  'fallback-secret'
 
 console.log('🔍 Fallback check - MONGO_URI:', !!mongoUri)
 console.log('🔍 Fallback check - RESEND_API_KEY:', !!resendApiKey)
+console.log('🔍 Fallback check - FROM_EMAIL:', !!fromEmail)
 console.log('🔍 Fallback check - CORS_ORIGIN:', corsOrigin)
+console.log('🔍 Checking VATPILOT_ prefixed vars:', Object.keys(process.env).filter(key => key.startsWith('VATPILOT_')))
 
 // Log environment status for debugging
 console.log('🌍 Environment:', process.env.NODE_ENV || 'development')
 console.log('🚀 Starting server on port:', PORT)
 console.log('🔧 CORS Origin:', corsOrigin)
-console.log('📧 From Email:', process.env.FROM_EMAIL || 'not set')
+console.log('📧 From Email:', fromEmail || 'not set')
 console.log('🗄️ MongoDB URI:', process.env.MONGO_URI ? 'configured' : 'missing')
 console.log('📧 Resend API Key:', process.env.RESEND_API_KEY ? 'configured' : 'missing')
 
@@ -368,7 +382,7 @@ app.post('/api/leads', async (req, res) => {
       console.log('📧 Resend service available, attempting to send email')
       try {
         const emailResponse = await resend.emails.send({
-          from: process.env.FROM_EMAIL || 'VATpilot Support <onboarding@resend.dev>',
+          from: fromEmail || 'VATpilot Support <onboarding@resend.dev>',
           to: [email],
           subject: emailContent.subject,
           html: emailContent.html,
