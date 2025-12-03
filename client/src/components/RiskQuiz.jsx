@@ -20,13 +20,23 @@ const emailSchema = z.object({
 })
 
 /**
- * API Configuration
+ * API Configuration - imported from centralized API utility
  */
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://ioss-compliance-reporter-production.up.railway.app/api'
+import { leadApi, API_BASE_URL, apiConfig } from '@/lib/api'
 
-// Debug log for production troubleshooting
-console.log('API_BASE_URL:', API_BASE_URL)
-console.log('VITE_API_URL env var:', import.meta.env.VITE_API_URL)
+// Environment validation and debug logging
+if (apiConfig.isDevelopment) {
+  console.log('🎯 RiskQuiz loaded with API config:', {
+    baseURL: API_BASE_URL,
+    environment: apiConfig.environment,
+    isDev: apiConfig.isDevelopment
+  })
+  
+  // Validate local server availability in development
+  if (API_BASE_URL.includes('localhost')) {
+    console.log('🔍 Development mode detected - ensure local server is running on http://localhost:5000')
+  }
+}
 
 /**
  * Quiz questions configuration
@@ -184,25 +194,21 @@ export default function RiskQuiz() {
         source: 'risk_quiz'
       }
 
-      // Send to backend API - using explicit absolute URL
-      const fullApiUrl = 'https://ioss-compliance-reporter-production.up.railway.app/api/leads'
-      console.log('Making API call to:', fullApiUrl)
-      console.log('API_BASE_URL was:', API_BASE_URL)
-      console.log('Payload:', payload)
-      
-      const response = await axios.post(fullApiUrl, payload, {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        timeout: 30000 // 30 second timeout for Railway cold starts
+      // Send to backend API using centralized API client
+      console.log('📧 Submitting lead via API:', {
+        environment: apiConfig.environment,
+        baseURL: API_BASE_URL,
+        payload
       })
+      
+      const responseData = await leadApi.create(payload)
 
-      if (response.data.success) {
+      if (responseData.success) {
         setSubmissionStatus('success')
         setEmailSubmitted(true)
         
         // Show success message based on response
-        const message = response.data.emailError 
+        const message = responseData.emailError 
           ? "Thanks! You've been registered. We'll contact you soon."
           : "Thanks! Check your email for next steps."
         
@@ -213,7 +219,7 @@ export default function RiskQuiz() {
         
         reset()
       } else {
-        throw new Error(response.data.message || 'Submission failed')
+        throw new Error(responseData.message || 'Submission failed')
       }
       
     } catch (error) {
