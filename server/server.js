@@ -39,22 +39,19 @@ if (process.env.PORT) {
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultCorsOrigin = isProduction ? 'https://vatpilot.netlify.app' : 'http://localhost:5173'
 
-// Railway environment variable fallback - try different variable name patterns
+// Environment variable configuration with fallbacks
 const corsOrigin = process.env.CORS_ORIGIN || 
                    process.env.VATPILOT_CORS_ORIGIN ||
-                   process.env.RAILWAY_CORS_ORIGIN || 
                    defaultCorsOrigin
 
-// Try to access MongoDB URI with different patterns
+// MongoDB URI with fallback patterns
 const mongoUri = process.env.MONGO_URI || 
                  process.env.VATPILOT_MONGO_URI ||
-                 process.env.RAILWAY_MONGO_URI || 
                  process.env.DATABASE_URL
 
-// Try to access Resend API key with different patterns  
+// Resend API key with fallback patterns  
 const resendApiKey = process.env.RESEND_API_KEY || 
-                     process.env.VATPILOT_RESEND_API_KEY ||
-                     process.env.RAILWAY_RESEND_API_KEY
+                     process.env.VATPILOT_RESEND_API_KEY
 
 // Try to access other environment variables with prefixes
 const fromEmail = process.env.FROM_EMAIL || 

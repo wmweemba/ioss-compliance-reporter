@@ -1,11 +1,11 @@
-# Nixpacks configuration for VATpilot Railway deployment
-# This file tells Railway to build from the server subdirectory
+# Nixpacks configuration for VATpilot deployment
+# This file tells the platform to build from the server subdirectory
 
 [build]
 cmd = "cd server && npm install --omit=dev"
 
 [start] 
-cmd = "cd server && node railway-start.js"
+cmd = "cd server && npm start"
 
 [variables]
 NODE_ENV = "production"
