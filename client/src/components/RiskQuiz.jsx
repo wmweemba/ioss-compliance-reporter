@@ -99,7 +99,7 @@ const RISK_SCENARIOS = [
       answers.destination === 'eu' && 
       answers.ioss_status === 'yes',
     result: "MODERATE_RISK",
-    headline: "⚠️ COMPLIANCE GAP: Are you filing your monthly reports?",
+    headline: "⚠️ AUDIT RISK DETECTED: Are you filing your monthly reports?",
     description: "You have the number, but do you have the data? If you don't file the monthly IOSS report correctly, you face audits and fines.",
     icon: AlertTriangle,
     iconColor: "text-yellow-600 dark:text-yellow-500",
@@ -271,6 +271,17 @@ export default function RiskQuiz() {
     }
   }
 
+  /**
+   * Navigate to next question or show results
+   */
+  const goNext = () => {
+    if (currentStep < QUIZ_QUESTIONS.length - 1) {
+      setCurrentStep(currentStep + 1)
+    } else {
+      setShowResults(true)
+    }
+  }
+
   const currentQuestion = QUIZ_QUESTIONS[currentStep]
   const riskAssessment = showResults ? calculateRisk(answers) : null
   const progress = ((currentStep + 1) / QUIZ_QUESTIONS.length) * 100
@@ -319,13 +330,13 @@ export default function RiskQuiz() {
                   <div className="text-center">
                     <h3 className="text-lg font-semibold text-foreground mb-2">
                       {riskAssessment.result === 'CRITICAL_RISK' 
-                        ? '🚨 Get Immediate IOSS Help'
+                        ? '🚨 Get the Automated Fix'
                         : '⚠️ Fix Your Compliance Gap'
                       }
                     </h3>
                     <p className="text-muted-foreground text-sm">
                       {riskAssessment.result === 'CRITICAL_RISK'
-                        ? 'Our experts will contact you within 24 hours with a compliance solution'
+                        ? 'Join the Private Beta to auto-generate your reports. Spots are limited.'
                         : 'Join our beta to auto-generate your IOSS reports and stay compliant'
                       }
                     </p>
@@ -377,8 +388,8 @@ export default function RiskQuiz() {
                       ) : (
                         <>
                           {riskAssessment.result === 'CRITICAL_RISK' 
-                            ? '🚨 Get Immediate Help →' 
-                            : '🔧 Join Beta Program →'
+                            ? '🚨 Fix My Risk Now →' 
+                            : '🔧 Join Automation Beta →'
                           }
                         </>
                       )}
@@ -525,6 +536,7 @@ export default function RiskQuiz() {
               
               <Button 
                 variant="ghost"
+                onClick={goNext}
                 disabled={!answers[currentQuestion.id]}
                 className="flex items-center space-x-2 text-muted-foreground"
               >

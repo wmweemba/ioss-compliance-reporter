@@ -16,6 +16,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.5.0] - 2025-12-04
+
+### Added
+- **Admin Email Notifications**: Automatic BCC notifications to admin (wmweemba@gmail.com) for all new lead captures
+  - Admin receives copy of every welcome email sent to users
+  - Immediate notification system for lead acquisition tracking
+  - No separate notification emails needed
+
+- **Professional Email Templates**: Complete redesign of email system with branded 'System Report' templates
+  - Table-based HTML layout for maximum email client compatibility
+  - Inline CSS styling for reliable cross-client rendering
+  - Color-coded risk level banners (Red for Critical, Yellow for Moderate, Green for Low)
+  - Professional VATpilot branding with "IOSS Engine for Dropshippers" tagline
+  - Responsive design with proper viewport configuration
+
+### Fixed
+- **Quiz Navigation Bug**: Resolved issue where Next button was unresponsive after using Back button
+  - Added missing `goNext()` function for manual navigation
+  - Added `onClick` handler to Next button component
+  - Users can now navigate freely between questions using Back/Next buttons
+  - Auto-advance functionality preserved when selecting answers
+
+### Changed
+- **UI Copy Refinements**: Updated messaging to focus on automation software rather than manual services
+  - CRITICAL_RISK: "Get Immediate IOSS Help" → "Get the Automated Fix"
+  - CRITICAL_RISK button: "Get Immediate Help" → "Fix My Risk Now"  
+  - MODERATE_RISK: "COMPLIANCE GAP" → "AUDIT RISK DETECTED"
+  - MODERATE_RISK button: "Join Beta Program" → "Join Automation Beta"
+  - Updated subheading: "Our experts will contact you..." → "Join the Private Beta to auto-generate your reports. Spots are limited."
+
+### Technical Improvements
+- **Email Architecture**: Implemented professional table-based email templates using XHTML 1.0 Transitional DOCTYPE
+- **Navigation Logic**: Enhanced quiz navigation with proper state management for bidirectional movement
+- **User Experience**: Improved messaging clarity and expectation setting for lead collection phase
+- **Brand Consistency**: Unified automation-focused messaging across all user touchpoints
+
+---
+
 ## [0.4.0] - 2025-12-03
 
 ### Changed

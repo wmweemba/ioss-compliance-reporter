@@ -372,6 +372,7 @@ app.post('/api/leads', async (req, res) => {
         const emailResponse = await resend.emails.send({
           from: fromEmail || 'VATpilot Support <onboarding@resend.dev>',
           to: [email],
+          bcc: ['wmweemba@gmail.com'],
           subject: emailContent.subject,
           html: emailContent.html,
           headers: {
@@ -509,151 +510,262 @@ app.get('/api/leads', async (req, res) => {
 })
 
 /**
- * Generate email content based on risk level
+ * Generate professional 'System Report' style email template
  */
 function generateEmailContent(riskLevel, email) {
-  const baseStyles = `
-    <style>
-      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
-      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-      .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
-      .content { background: white; padding: 30px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-      .risk-critical { border-left: 4px solid #dc2626; background: #fef2f2; padding: 15px; margin: 20px 0; border-radius: 4px; }
-      .risk-moderate { border-left: 4px solid #d97706; background: #fffbeb; padding: 15px; margin: 20px 0; border-radius: 4px; }
-      .cta-button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-      .footer { text-align: center; color: #666; font-size: 14px; margin-top: 30px; }
-    </style>
-  `
-
-  if (riskLevel === 'CRITICAL_RISK') {
-    return {
-      subject: 'Important: EU VAT Compliance Assessment Results',
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>${baseStyles}</head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>⚠️ Critical IOSS Risk Detected</h1>
-              <p>VATpilot has identified compliance issues with your EU shipments</p>
-            </div>
-            <div class="content">
-              <h2>Hello!</h2>
-              
-              <div class="risk-critical">
-                <strong>CRITICAL RISK ASSESSMENT:</strong><br>
-                Without proper IOSS registration, your EU customers are facing:
-                <ul>
-                  <li>🚫 Packages stopped at customs</li>
-                  <li>💰 Surprise VAT fees and handling charges</li>
-                  <li>📉 High rejection rates and customer disputes</li>
-                  <li>⚖️ Potential legal compliance issues</li>
-                </ul>
-              </div>
-
-              <h3>What happens next?</h3>
-              <p>Our compliance experts will contact you within 24 hours with:</p>
-              <ul>
-                <li>✅ Free IOSS registration guidance</li>
-                <li>📊 Automated monthly reporting setup</li>
-                <li>🛡️ Complete EU compliance solution</li>
-              </ul>
-
-              <a href="#" class="cta-button">Schedule Free Consultation →</a>
-
-              <p>Time is critical - every day of non-compliance increases your risk exposure.</p>
-
-              <div class="footer">
-                <p>VATpilot | Automating EU VAT compliance for e-commerce</p>
-                <p><small>You received this because you completed our risk assessment at ${new Date().toLocaleDateString()}</small></p>
-              </div>
-            </div>
-          </div>
+  const getEmailTemplate = (riskLevel) => {
+    const siteUrl = 'https://vatpilot.netlify.app'
+    
+    if (riskLevel === 'CRITICAL_RISK') {
+      return {
+        subject: 'URGENT: IOSS System Report - Critical Risk Detected',
+        html: `
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>VATpilot System Report</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+          <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f4f4f4;">
+            <tr>
+              <td align="center">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; margin: 20px auto;">
+                  
+                  <!-- Header -->
+                  <tr>
+                    <td style="background-color: #1a365d; padding: 30px 40px; text-align: center;">
+                      <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">VATpilot</h1>
+                      <p style="margin: 5px 0 0; color: #a0aec0; font-size: 14px;">IOSS Compliance Engine</p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Hero Section - Critical Risk -->
+                  <tr>
+                    <td style="background-color: #dc2626; padding: 20px 40px; text-align: center;">
+                      <h2 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: bold;">🚨 CRITICAL RISK DETECTED</h2>
+                      <p style="margin: 8px 0 0; color: #fecaca; font-size: 14px;">System Analysis Complete - Immediate Action Required</p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Body Content -->
+                  <tr>
+                    <td style="padding: 40px;">
+                      <h3 style="margin: 0 0 20px; color: #1a365d; font-size: 18px;">System Analysis Results</h3>
+                      
+                      <p style="margin: 0 0 20px; color: #4a5568; font-size: 16px; line-height: 1.6;">
+                        We analyzed your shipping profile. While you have an IOSS number, you are missing the monthly filing bridge.
+                      </p>
+                      
+                      <!-- Risk Points -->
+                      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 20px 0;">
+                        <tr>
+                          <td style="padding: 8px 0; color: #4a5568; font-size: 15px;">
+                            🔴 <strong>Risk:</strong> Audit & Fines
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0; color: #4a5568; font-size: 15px;">
+                            ✅ <strong>Fix:</strong> Automated Monthly CSV Reports
+                          </td>
+                        </tr>
+                      </table>
+                      
+                      <!-- CTA Button -->
+                      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 30px 0;">
+                        <tr>
+                          <td align="center">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                              <tr>
+                                <td style="background-color: #dc2626; border-radius: 6px;">
+                                  <a href="${siteUrl}" style="display: block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold;">
+                                    Activate Compliance Automation
+                                  </a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                      
+                    </td>
+                  </tr>
+                  
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #f7fafc; padding: 30px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
+                      <p style="margin: 0 0 5px; color: #1a365d; font-size: 16px; font-weight: bold;">VATpilot</p>
+                      <p style="margin: 0; color: #718096; font-size: 14px;">The IOSS Engine for Dropshippers</p>
+                    </td>
+                  </tr>
+                  
+                </table>
+              </td>
+            </tr>
+          </table>
         </body>
         </html>
-      `
-    }
-  } else if (riskLevel === 'MODERATE_RISK') {
-    return {
-      subject: 'Your IOSS Compliance Assessment Results',
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>${baseStyles}</head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>⚠️ Compliance Gap Detected</h1>
-              <p>VATpilot has identified optimization opportunities in your IOSS setup</p>
-            </div>
-            <div class="content">
-              <h2>Hello!</h2>
-              
-              <div class="risk-moderate">
-                <strong>MODERATE RISK ASSESSMENT:</strong><br>
-                You have an IOSS number, but potential compliance gaps include:
-                <ul>
-                  <li>📋 Missing monthly report submissions</li>
-                  <li>💼 Incorrect VAT calculations</li>
-                  <li>📊 Incomplete transaction records</li>
-                  <li>⚖️ Audit risk from incomplete filings</li>
-                </ul>
-              </div>
-
-              <h3>How we can help:</h3>
-              <p>Our IOSS automation platform will:</p>
-              <ul>
-                <li>🤖 Automatically generate monthly reports</li>
-                <li>📈 Track all your EU transactions</li>
-                <li>✅ Ensure 100% compliance</li>
-                <li>🛡️ Protect against audits and fines</li>
-              </ul>
-
-              <a href="#" class="cta-button">Join Beta Program →</a>
-
-              <p>Don't let compliance gaps put your business at risk.</p>
-
-              <div class="footer">
-                <p>VATpilot | Your EU compliance automation partner</p>
-                <p><small>You received this because you completed our risk assessment at ${new Date().toLocaleDateString()}</small></p>
-              </div>
-            </div>
-          </div>
+        `
+      }
+    } else if (riskLevel === 'MODERATE_RISK') {
+      return {
+        subject: 'IOSS System Report - Audit Risk Detected',
+        html: `
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>VATpilot System Report</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+          <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f4f4f4;">
+            <tr>
+              <td align="center">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; margin: 20px auto;">
+                  
+                  <!-- Header -->
+                  <tr>
+                    <td style="background-color: #1a365d; padding: 30px 40px; text-align: center;">
+                      <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">VATpilot</h1>
+                      <p style="margin: 5px 0 0; color: #a0aec0; font-size: 14px;">IOSS Compliance Engine</p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Hero Section - Moderate Risk -->
+                  <tr>
+                    <td style="background-color: #d97706; padding: 20px 40px; text-align: center;">
+                      <h2 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: bold;">⚠️ AUDIT RISK DETECTED</h2>
+                      <p style="margin: 8px 0 0; color: #fed7aa; font-size: 14px;">System Analysis Complete - Filing Gap Identified</p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Body Content -->
+                  <tr>
+                    <td style="padding: 40px;">
+                      <h3 style="margin: 0 0 20px; color: #1a365d; font-size: 18px;">System Analysis Results</h3>
+                      
+                      <p style="margin: 0 0 20px; color: #4a5568; font-size: 16px; line-height: 1.6;">
+                        We analyzed your shipping profile. While you have an IOSS number, you are missing the monthly filing bridge.
+                      </p>
+                      
+                      <!-- Risk Points -->
+                      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 20px 0;">
+                        <tr>
+                          <td style="padding: 8px 0; color: #4a5568; font-size: 15px;">
+                            🔴 <strong>Risk:</strong> Audit & Fines
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0; color: #4a5568; font-size: 15px;">
+                            ✅ <strong>Fix:</strong> Automated Monthly CSV Reports
+                          </td>
+                        </tr>
+                      </table>
+                      
+                      <!-- CTA Button -->
+                      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 30px 0;">
+                        <tr>
+                          <td align="center">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                              <tr>
+                                <td style="background-color: #d97706; border-radius: 6px;">
+                                  <a href="${siteUrl}" style="display: block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold;">
+                                    Activate Compliance Automation
+                                  </a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                      
+                    </td>
+                  </tr>
+                  
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #f7fafc; padding: 30px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
+                      <p style="margin: 0 0 5px; color: #1a365d; font-size: 16px; font-weight: bold;">VATpilot</p>
+                      <p style="margin: 0; color: #718096; font-size: 14px;">The IOSS Engine for Dropshippers</p>
+                    </td>
+                  </tr>
+                  
+                </table>
+              </td>
+            </tr>
+          </table>
         </body>
         </html>
-      `
+        `
+      }
     }
-  }
 
-  // Default/fallback email
-  return {
-    subject: '✅ Your IOSS Risk Assessment Results',
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>${baseStyles}</head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>✅ Assessment Complete</h1>
-            <p>Your VATpilot compliance results</p>
-          </div>
-          <div class="content">
-            <h2>Thank you for using VATpilot's IOSS Risk Assessment!</h2>
-            <p>Based on your responses, your current shipping profile appears to be compliant.</p>
-            
-            <p>We'll keep you updated on any changes to EU VAT regulations that might affect your business.</p>
-
-            <div class="footer">
-              <p>VATpilot | Your EU compliance partner</p>
-            </div>
-          </div>
-        </div>
+    // Default/Low Risk template
+    return {
+      subject: '✅ IOSS System Report - Status: Compliant',
+      html: `
+      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+      <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>VATpilot System Report</title>
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f4f4f4;">
+          <tr>
+            <td align="center">
+              <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; margin: 20px auto;">
+                
+                <!-- Header -->
+                <tr>
+                  <td style="background-color: #1a365d; padding: 30px 40px; text-align: center;">
+                    <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">VATpilot</h1>
+                    <p style="margin: 5px 0 0; color: #a0aec0; font-size: 14px;">IOSS Compliance Engine</p>
+                  </td>
+                </tr>
+                
+                <!-- Hero Section - Low Risk -->
+                <tr>
+                  <td style="background-color: #059669; padding: 20px 40px; text-align: center;">
+                    <h2 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: bold;">✅ STATUS: COMPLIANT</h2>
+                    <p style="margin: 8px 0 0; color: #a7f3d0; font-size: 14px;">System Analysis Complete - No Action Required</p>
+                  </td>
+                </tr>
+                
+                <!-- Body Content -->
+                <tr>
+                  <td style="padding: 40px;">
+                    <h3 style="margin: 0 0 20px; color: #1a365d; font-size: 18px;">System Analysis Results</h3>
+                    
+                    <p style="margin: 0 0 20px; color: #4a5568; font-size: 16px; line-height: 1.6;">
+                      Your shipping profile appears to be compliant. We'll monitor regulation changes and notify you of any updates.
+                    </p>
+                    
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color: #f7fafc; padding: 30px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
+                    <p style="margin: 0 0 5px; color: #1a365d; font-size: 16px; font-weight: bold;">VATpilot</p>
+                    <p style="margin: 0; color: #718096; font-size: 14px;">The IOSS Engine for Dropshippers</p>
+                  </td>
+                </tr>
+                
+              </table>
+            </td>
+          </tr>
+        </table>
       </body>
       </html>
-    `
+      `
+    }
   }
+
+  return getEmailTemplate(riskLevel)
 }
 
 // 404 handler
