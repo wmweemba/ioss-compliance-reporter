@@ -210,7 +210,7 @@ NODE_ENV=development
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/vatpilot
 RESEND_API_KEY=re_your_resend_api_key_here
-FROM_EMAIL="VATpilot <noreply@vatpilot.com>"
+FROM_EMAIL="VATpilot Support <vatpilot@mynexusgroup.com>"
 JWT_SECRET=your-super-secret-jwt-key-here
 CORS_ORIGIN=http://localhost:5173
 ```

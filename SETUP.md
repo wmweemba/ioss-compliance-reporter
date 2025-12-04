@@ -17,7 +17,7 @@ PORT=5000
 MONGO_URI=mongodb://localhost:27017/vatpilot
 CORS_ORIGIN=http://localhost:5173
 RESEND_API_KEY=re_your_actual_api_key_here
-FROM_EMAIL="VATpilot <noreply@vatpilot.com>"
+FROM_EMAIL="VATpilot Support <vatpilot@mynexusgroup.com>"
 ```
 
 #### Client Setup (.env)

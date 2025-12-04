@@ -25,7 +25,7 @@ NODE_ENV=production
 MONGO_URI=mongodb+srv://your-username:your-password@your-cluster.mongodb.net/vatpilot
 CORS_ORIGIN=https://vatpilot.netlify.app
 RESEND_API_KEY=re_your_actual_resend_api_key
-FROM_EMAIL=VATpilot Support <onboarding@resend.dev>
+FROM_EMAIL="VATpilot Support <vatpilot@mynexusgroup.com>"
 ```
 
 **Security Note**: Never commit actual credentials to git. Use your actual MongoDB and Resend credentials.

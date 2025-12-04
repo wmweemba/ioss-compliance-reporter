@@ -56,7 +56,7 @@ const resendApiKey = process.env.RESEND_API_KEY ||
 // Try to access other environment variables with prefixes
 const fromEmail = process.env.FROM_EMAIL || 
                   process.env.VATPILOT_FROM_EMAIL ||
-                  '"VATpilot Support <onboarding@resend.dev>"'
+                  '"VATpilot Support <vatpilot@mynexusgroup.com>"'
 
 const jwtSecret = process.env.JWT_SECRET || 
                   process.env.VATPILOT_JWT_SECRET ||
@@ -370,7 +370,7 @@ app.post('/api/leads', async (req, res) => {
       console.log('📧 Resend service available, attempting to send email')
       try {
         const emailResponse = await resend.emails.send({
-          from: fromEmail || 'VATpilot Support <onboarding@resend.dev>',
+          from: fromEmail || 'VATpilot Support <vatpilot@mynexusgroup.com>',
           to: [email],
           bcc: ['wmweemba@gmail.com'],
           subject: emailContent.subject,

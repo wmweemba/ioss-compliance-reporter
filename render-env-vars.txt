@@ -3,7 +3,7 @@
 
 MONGO_URI=mongodb+srv://your-mongodb-connection-string
 RESEND_API_KEY=re_your-resend-api-key
-FROM_EMAIL=VATpilot Support <your-email@yourdomain.com>
+FROM_EMAIL="VATpilot Support <vatpilot@mynexusgroup.com>"
 CORS_ORIGIN=https://vatpilot.netlify.app
 NODE_ENV=production
 

@@ -16,6 +16,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.5.1] - 2025-12-04
+
+### Changed
+- **Email Domain Migration**: Migrated from Resend dev domain to custom MyNexus Group domain
+  - **New Sender Address**: `vatpilot@mynexusgroup.com` with "VATpilot Support" display name
+  - Improved email deliverability and professional branding
+  - Updated all documentation and environment templates
+  - DNS verification completed (DKIM, SPF, DMARC records verified)
+
+### Updated
+- **Configuration Files**: Updated email configuration across all environments
+  - Updated server fallback email addresses to use custom domain
+  - Updated `.env.example` template with new sender address
+  - Updated `SETUP.md` and `DEPLOYMENT.md` documentation
+  - Updated `render-env-vars.txt` template for production deployment
+
+### Technical Improvements
+- **Brand Consistency**: All emails now sent from verified MyNexus Group domain
+- **Enhanced Deliverability**: Custom domain improves email reputation and delivery rates
+- **Security**: Maintained secure credential management (no API keys in committed files)
+
+---
+
 ## [0.5.0] - 2025-12-04
 
 ### Added
