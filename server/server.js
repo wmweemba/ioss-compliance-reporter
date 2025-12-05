@@ -102,8 +102,11 @@ const connectDB = async () => {
 
   try {
     console.log('🔗 Attempting MongoDB connection with URI pattern:', mongoUri.substring(0, 20) + '...')
-    const conn = await mongoose.connect(mongoUri)
+    const conn = await mongoose.connect(mongoUri, {
+      dbName: 'vatpilot' // Explicitly set database name
+    })
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`)
+    console.log(`📊 Database: ${conn.connection.name}`)
   } catch (error) {
     console.error('❌ MongoDB Connection Error:', error.message)
     console.log('⚠️ Server will continue without database connection')
@@ -558,6 +561,10 @@ function generateEmailContent(riskLevel, email) {
                         We analyzed your shipping profile. While you have an IOSS number, you are missing the monthly filing bridge.
                       </p>
                       
+                      <p style="margin: 0 0 20px; color: #4a5568; font-size: 16px; line-height: 1.6; background-color: #e6fffa; padding: 15px; border-radius: 6px; border-left: 4px solid #38b2ac;">
+                        <strong>✅ You have been added to our Beta waitlist.</strong> Our team will be in touch soon with onboarding instructions.
+                      </p>
+                      
                       <!-- Risk Points -->
                       <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 20px 0;">
                         <tr>
@@ -648,6 +655,10 @@ function generateEmailContent(riskLevel, email) {
                       
                       <p style="margin: 0 0 20px; color: #4a5568; font-size: 16px; line-height: 1.6;">
                         We analyzed your shipping profile. While you have an IOSS number, you are missing the monthly filing bridge.
+                      </p>
+                      
+                      <p style="margin: 0 0 20px; color: #4a5568; font-size: 16px; line-height: 1.6; background-color: #fffbeb; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                        <strong>✅ You have been added to our Beta waitlist.</strong> Our team will be in touch soon with onboarding instructions.
                       </p>
                       
                       <!-- Risk Points -->

@@ -209,8 +209,8 @@ export default function RiskQuiz() {
         
         // Show success message based on response
         const message = responseData.emailError 
-          ? "Thanks! You've been registered. We'll contact you soon."
-          : "Thanks! Check your email for next steps."
+          ? "Thanks! You've been added to our Beta waitlist. Check your email for details."
+          : "Added to Beta waitlist! Check your email for next steps."
         
         toast.success("Successfully registered!", {
           description: message,
@@ -418,26 +418,23 @@ export default function RiskQuiz() {
                   <div>
                     <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">
                       {riskAssessment.result === 'CRITICAL_RISK' 
-                        ? '🚨 Emergency Support Activated!'
+                        ? '✅ Added to Beta Waitlist!'
                         : '✅ Welcome to the Beta Program!'
                       }
                     </h3>
                     <p className="text-green-700 dark:text-green-300 text-sm">
-                      {riskAssessment.result === 'CRITICAL_RISK'
-                        ? 'Our compliance experts will contact you within 24 hours to resolve your IOSS issues immediately.'
-                        : 'Check your email for next steps. We\'ll help you automate your IOSS compliance.'
-                      }
+                      An email has been sent with further instructions on joining our Beta Program. Please check your junk or spam folders for a VATpilot email to ensure future communications are not blocked or lost.
                     </p>
                   </div>
                   
                   {/* Additional info for critical cases */}
                   {riskAssessment.result === 'CRITICAL_RISK' && (
                     <div className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/40 p-3 rounded border">
-                      <strong>⏰ Immediate Actions:</strong>
+                      <strong>📧 Next Steps:</strong>
                       <ul className="mt-1 text-left list-disc list-inside space-y-1">
-                        <li>Check your email for emergency IOSS guidance</li>
-                        <li>Our team is preparing your compliance package</li>
-                        <li>Expect a call within the next business day</li>
+                        <li>Check your email for Beta Program onboarding details</li>
+                        <li>Add VATpilot to your email contacts to avoid spam blocking</li>
+                        <li>Our team will send further instructions soon</li>
                       </ul>
                     </div>
                   )}
