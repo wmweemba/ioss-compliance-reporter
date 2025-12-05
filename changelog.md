@@ -27,7 +27,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Realistic country distribution: 70% EU customers, 80% China origin (dropshipping focus)
   - Complete order metadata including IOSS compliance flags
 
+- **IOSS Report Generation Logic**: Complete EU VAT compliance implementation
+  - `server/generate-ioss-report.js` - Core IOSS processing engine for synthetic data
+  - Official EU IOSS Monthly Return CSV format generation
+  - Comprehensive EU VAT rate compliance (27 member states)
+  - Smart filtering for IOSS-eligible transactions (€22-€150 from non-EU origins)
+  - Aggregation by member state with proper VAT calculations
+  - Production-ready CSV output matching official EU requirements
+
 - **NPM Scripts**: Added convenient commands for data management
+  - `npm run generate-dummy-data` - Creates synthetic order dataset
+  - `npm run validate-data` - Analyzes generated data for compliance edge cases  
+  - `npm run generate-ioss-report` - Processes synthetic data into official IOSS return
   - `npm run generate-data` - Generate synthetic order data
   - `npm run validate-data` - Validate and analyze existing data
   - Automatic package.json script registration

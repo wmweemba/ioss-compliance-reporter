@@ -17,7 +17,8 @@
     "start:dev": "npm run env:dev && npm run dev",
     "start:prod": "npm run env:prod && concurrently \"cd server && npm run start:prod\" \"cd client && npm run build && npm run preview\"",
     "generate-data": "node scripts/generate-dummy-data.js",
-    "validate-data": "node scripts/validate-data.js"
+    "validate-data": "node scripts/validate-data.js",
+    "generate-ioss-report": "node server/generate-ioss-report.js"
   },
   "keywords": [
     "vat",
