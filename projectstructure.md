@@ -8,10 +8,13 @@ This document outlines the complete folder and file organization for VATpilot - 
 ioss-compliance-reporter/
 ├── 📁 client/                    # Frontend React application
 ├── 📁 server/                    # Backend Express.js API
+├── 📁 scripts/                   # Utility scripts for data generation and development
 ├── 📄 .gitignore                # Git ignore rules
 ├── 📄 README.md                 # Main project documentation
 ├── 📄 changelog.md              # Version history and changes
 ├── 📄 projectstructure.md       # This file - project organization
+├── 📄 package.json              # Root workspace configuration
+├── 📄 pnpm-lock.yaml            # pnpm lock file for dependencies
 └── 📄 LICENSE                   # Project license (to be added)
 ```
 
@@ -63,14 +66,16 @@ client/
 
 ```
 server/
+├── 📁 data/                    # Generated and test data
+│   └── 📄 dummy_orders.json    # Synthetic order data (701KB, 1000 records)
+├── 📁 models/                  # MongoDB/Mongoose models
+│   └── 📄 Lead.js              # Lead capture model
 ├── 📁 src/ (future)            # Source code organization
 │   ├── 📁 controllers/         # Route controllers
 │   ├── 📁 middleware/          # Express middleware
-│   ├── 📁 models/              # MongoDB/Mongoose models
 │   ├── 📁 routes/              # API route definitions
 │   ├── 📁 services/            # Business logic services
-│   ├── 📁 utils/               # Utility functions
-│   └── 📄 app.js               # Express app configuration
+│   └── 📁 utils/               # Utility functions
 ├── 📁 config/                  # Configuration files
 │   └── 📄 database.js          # Database connection
 ├── 📁 tests/                   # Test files
@@ -79,6 +84,18 @@ server/
 ├── 📄 package.json             # Dependencies and scripts
 ├── 📄 pnpm-lock.yaml           # pnpm lock file
 └── 📄 server.js                # Entry point
+```
+
+---
+
+## 🧪 Scripts Directory Structure
+
+```
+scripts/
+├── 📄 env.js                   # Environment configuration utility
+├── 📄 generate-dummy-data.js   # Synthetic data generator using Faker.js
+├── 📄 validate-data.js         # Data validation and analysis tool
+└── 📄 README.md                # Scripts documentation and usage guide
 ```
 
 ---

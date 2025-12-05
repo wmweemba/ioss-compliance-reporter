@@ -16,6 +16,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.6.0] - 2025-12-05
+
+### Added
+- **Synthetic Data Generation System**: Complete Faker.js-powered data generation for IOSS compliance testing
+  - `scripts/generate-dummy-data.js` - Generates 1,000 realistic e-commerce orders
+  - `scripts/validate-data.js` - Validates and analyzes generated data
+  - `scripts/README.md` - Comprehensive documentation for data generation tools
+  - Strategic edge case coverage: High value (>€150), IOSS eligible (€22-€150), Low value (<€22)
+  - Realistic country distribution: 70% EU customers, 80% China origin (dropshipping focus)
+  - Complete order metadata including IOSS compliance flags
+
+- **NPM Scripts**: Added convenient commands for data management
+  - `npm run generate-data` - Generate synthetic order data
+  - `npm run validate-data` - Validate and analyze existing data
+  - Automatic package.json script registration
+
+### Changed
+- **Messaging Strategy**: Updated from expert contact approach to beta program waitlist
+  - **Email Templates**: Added beta waitlist confirmation blocks to CRITICAL_RISK and MODERATE_RISK templates
+  - **Success Messages**: Replaced "expert contact within 24 hours" with beta program messaging
+  - **UI Copy**: Updated quiz success states to focus on email instructions and beta program
+  - **Spam Folder Guidance**: Added reminders to check junk/spam folders for better deliverability
+
+### Fixed
+- **Database Connection**: Resolved MongoDB database targeting issue
+  - Added explicit `dbName: 'vatpilot'` to mongoose connection options
+  - Prevents fallback to default 'test' database
+  - All new leads now correctly save to `vatpilot.leads` collection
+  - Enhanced connection logging shows active database name
+
+### Technical Improvements
+- **Data Infrastructure**: Built foundation for compliance logic development with realistic test data
+- **Developer Experience**: Comprehensive tooling for synthetic data generation and validation
+- **Email Deliverability**: Improved user guidance for email management and spam prevention
+- **Database Reliability**: Explicit database targeting prevents data misrouting
+
+---
+
 ## [0.5.1] - 2025-12-04
 
 ### Changed

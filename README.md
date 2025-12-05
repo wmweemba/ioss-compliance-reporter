@@ -168,9 +168,16 @@ All UI components follow shadcn/ui patterns:
 
 ## 🔧 Development Scripts
 
+### Main Scripts
+```bash
+pnpm run dev        # Start both client and server in development
+pnpm run build      # Build for production
+pnpm run start      # Start production server
+```
+
 ### Client Scripts
 ```bash
-pnpm run dev        # Start development server
+pnpm run client:dev # Start development server
 pnpm run build      # Build for production
 pnpm run preview    # Preview production build
 pnpm run lint       # Run ESLint
@@ -178,10 +185,23 @@ pnpm run lint       # Run ESLint
 
 ### Server Scripts
 ```bash
-pnpm run dev        # Start with nodemon
+pnpm run server:dev # Start with nodemon
 pnpm run start      # Start production server
 pnpm run lint       # Run ESLint
 ```
+
+### 🧪 Data Generation Scripts
+```bash
+pnpm run generate-data  # Generate 1,000 synthetic orders for testing
+pnpm run validate-data  # Validate and analyze generated data
+```
+
+**Synthetic Data Features:**
+- 1,000 realistic e-commerce orders with proper IOSS edge cases
+- 70% EU customers, 30% non-EU (realistic distribution)
+- Strategic value ranges: High (>€150), IOSS eligible (€22-€150), Low (<€22)
+- Complete compliance metadata for testing classification rules
+- Output: `server/data/dummy_orders.json`
 
 ## 🚀 Deployment
 
