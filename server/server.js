@@ -2,6 +2,9 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import path from 'path'
+import fs from 'fs'
+import { spawn } from 'child_process'
 import { Resend } from 'resend'
 import Lead from './models/Lead.js'
 
@@ -123,6 +126,45 @@ app.get('/api/health', (req, res) => {
     message: 'VATpilot API is running',
     timestamp: new Date().toISOString()
   })
+})
+
+// Sample CSV download route
+app.get('/api/reports/sample', (req, res) => {
+  try {
+    // Use proper path resolution - check both possible locations
+    let reportPath = path.join(process.cwd(), 'server', 'reports', 'ioss_return_2025_12.csv')
+    
+    // If server is run from server directory, adjust path
+    if (!fs.existsSync(reportPath)) {
+      reportPath = path.join(process.cwd(), 'reports', 'ioss_return_2025_12.csv')
+    }
+    
+    console.log('📊 Checking for sample report at:', reportPath)
+    console.log('📂 File exists:', fs.existsSync(reportPath))
+    
+    // Check if report exists
+    if (fs.existsSync(reportPath)) {
+      // File exists, send it directly
+      console.log('📤 Sending existing sample report')
+      res.download(reportPath, 'VATpilot_Sample_Report.csv', (err) => {
+        if (err) {
+          console.error('❌ Download error:', err)
+          res.status(500).json({ error: 'Download failed: ' + err.message })
+        } else {
+          console.log('📤 Sample report downloaded successfully')
+        }
+      })
+    } else {
+      console.log('❌ Sample report file not found')
+      res.status(404).json({ 
+        error: 'Sample report not available',
+        message: 'Please generate the sample data first by running: npm run generate-ioss-report'
+      })
+    }
+  } catch (error) {
+    console.error('❌ Sample report endpoint error:', error)
+    res.status(500).json({ error: 'Internal server error: ' + error.message })
+  }
 })
 
 // Detailed system health check route

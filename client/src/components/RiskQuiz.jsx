@@ -263,6 +263,39 @@ export default function RiskQuiz() {
   }
 
   /**
+   * Download sample CSV report
+   */
+  const handleDownloadSample = async () => {
+    try {
+      console.log('📄 Downloading sample CSV report...')
+      
+      const response = await axios.get(`${API_BASE_URL}/reports/sample`, {
+        responseType: 'blob'
+      })
+      
+      // Create blob and trigger download
+      const blob = new Blob([response.data], { type: 'text/csv' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'VATpilot_Sample_Report.csv')
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      
+      toast.success('Sample report downloaded', {
+        description: 'Check your Downloads folder for the CSV file'
+      })
+    } catch (error) {
+      console.error('❌ Sample download error:', error)
+      toast.error('Download failed', {
+        description: 'Unable to download sample report. Please try again.'
+      })
+    }
+  }
+
+  /**
    * Navigate to previous question
    */
   const goBack = () => {
@@ -442,9 +475,12 @@ export default function RiskQuiz() {
               )}
 
               {/* Actions */}
-              <div className="flex justify-center">
+              <div className="flex justify-center gap-3">
                 <Button variant="outline" onClick={resetQuiz}>
                   Take Quiz Again
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleDownloadSample} className="text-muted-foreground">
+                  📄 Download Sample CSV
                 </Button>
               </div>
             </CardContent>

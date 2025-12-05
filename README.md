@@ -18,9 +18,11 @@
 - Multi-step EU VAT risk assessment quiz
 - Real-time IOSS compliance evaluation
 - Automated email capture for high-risk cases
+- **📄 Sample CSV Download** - Download real IOSS compliance reports
 - Professional compliance reporting dashboard
 - Intelligent risk categorization (Critical/Moderate/Low)
-- Automated IOSS report generation (planned)
+- Automated IOSS report generation with synthetic data
+- Complete EU IOSS Monthly Return CSV format (516 orders, 27 countries)
 
 ## 🌐 Live Demo
 
@@ -125,8 +127,18 @@ See [projectstructure.md](./projectstructure.md) for detailed folder and file or
   - 4-question risk evaluation
   - Dynamic risk calculation
   - Email capture for high-risk cases
+  - **📄 Sample CSV Download** - Real IOSS report demonstration
   - Progress tracking and smooth transitions
   - Toast notifications and form validation
+
+### Sample CSV Download Feature (`GET /api/reports/sample`)
+- **Purpose:** Demonstrate VATpilot's IOSS reporting capabilities
+- **Features:**
+  - Downloads real IOSS compliance CSV with 516 orders across 27 EU countries
+  - Official EU IOSS Monthly Return format (945 bytes, 28 rows)
+  - Smart path resolution for development and production
+  - Automatic filename: `VATpilot_Sample_Report.csv`
+  - Integrated into quiz success flow with one-click access
 
 ### Risk Assessment Logic
 ```javascript

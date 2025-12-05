@@ -35,6 +35,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Aggregation by member state with proper VAT calculations
   - Production-ready CSV output matching official EU requirements
 
+- **Sample CSV Download Feature**: Frontend integration for IOSS report demonstration
+  - `GET /api/reports/sample` - Backend endpoint serving downloadable IOSS CSV reports
+  - Download button in quiz success state - "📄 Download Sample CSV"
+  - Automatic file download as `VATpilot_Sample_Report.csv` (945 bytes, 28 rows)
+  - Complete user flow: Quiz → Email → Beta confirmation → Sample download
+  - Smart path resolution supporting both development and production environments
+
 - **NPM Scripts**: Added convenient commands for data management
   - `npm run generate-dummy-data` - Creates synthetic order dataset
   - `npm run validate-data` - Analyzes generated data for compliance edge cases  
