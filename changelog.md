@@ -16,6 +16,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.6.1] - 2025-12-07
+
+### Enhanced
+- **Email Templates**: Added direct CSV download links to both critical and moderate risk emails
+  - \"📄 See What VATpilot Generates\" section with download button
+  - Direct link to `/api/reports/sample` endpoint in emails
+  - Environment-aware URL construction (dev/production)
+  - Professional email styling with sample data preview (516 orders, 27 countries)
+
+### Fixed  
+- **Production Deployment**: Triggered rebuild to ensure CSV download button appears in production
+- **Documentation**: Added direct sample CSV link to README live demo section
+
+---
+
 ## [0.6.0] - 2025-12-05
 
 ### Added

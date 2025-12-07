@@ -29,6 +29,7 @@
 - **Frontend**: [https://vatpilot.netlify.app](https://vatpilot.netlify.app) 
 - **Backend API**: [https://vatpilot.onrender.com](https://vatpilot.onrender.com)
 - **Health Check**: [https://vatpilot.onrender.com/api/health](https://vatpilot.onrender.com/api/health)
+- **Sample CSV**: [Download IOSS Report Sample](https://vatpilot.onrender.com/api/reports/sample)
 
 ## 🚀 Tech Stack
 

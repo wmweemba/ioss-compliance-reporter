@@ -638,6 +638,33 @@ function generateEmailContent(riskLevel, email) {
                         </tr>
                       </table>
                       
+                      <!-- Sample Download Section -->
+                      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 20px 0; background-color: #f8fafc; border-radius: 8px; padding: 20px;">
+                        <tr>
+                          <td>
+                            <h4 style="margin: 0 0 10px; color: #1a365d; font-size: 16px; text-align: center;">📄 See What VATpilot Generates</h4>
+                            <p style="margin: 0 0 15px; color: #4a5568; font-size: 14px; text-align: center; line-height: 1.5;">
+                              Download a real IOSS compliance report sample (516 orders, 27 EU countries)
+                            </p>
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                              <tr>
+                                <td align="center">
+                                  <table cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                      <td style="background-color: #64748b; border-radius: 4px; border: 1px solid #e2e8f0;">
+                                        <a href="${process.env.NODE_ENV === 'production' ? 'https://vatpilot.onrender.com' : 'http://localhost:5000'}/api/reports/sample" style="display: block; padding: 12px 24px; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 500;">
+                                          📊 Download Sample CSV
+                                        </a>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                      
                     </td>
                   </tr>
                   
@@ -727,6 +754,33 @@ function generateEmailContent(riskLevel, email) {
                                   <a href="${siteUrl}" style="display: block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold;">
                                     Activate Compliance Automation
                                   </a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                      
+                      <!-- Sample Download Section -->
+                      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 20px 0; background-color: #f8fafc; border-radius: 8px; padding: 20px;">
+                        <tr>
+                          <td>
+                            <h4 style="margin: 0 0 10px; color: #1a365d; font-size: 16px; text-align: center;">📄 See What VATpilot Generates</h4>
+                            <p style="margin: 0 0 15px; color: #4a5568; font-size: 14px; text-align: center; line-height: 1.5;">
+                              Download a real IOSS compliance report sample (516 orders, 27 EU countries)
+                            </p>
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                              <tr>
+                                <td align="center">
+                                  <table cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                      <td style="background-color: #64748b; border-radius: 4px; border: 1px solid #e2e8f0;">
+                                        <a href="${process.env.NODE_ENV === 'production' ? 'https://vatpilot.onrender.com' : 'http://localhost:5000'}/api/reports/sample" style="display: block; padding: 12px 24px; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 500;">
+                                          📊 Download Sample CSV
+                                        </a>
+                                      </td>
+                                    </tr>
+                                  </table>
                                 </td>
                               </tr>
                             </table>
