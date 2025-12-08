@@ -44,12 +44,8 @@ router.get('/auth', async (req, res) => {
     // Generate OAuth URL
     const authUrl = getOAuthUrl(sanitizedShop, encodedState);
 
-    res.json({
-      success: true,
-      authUrl: authUrl,
-      shop: sanitizedShop,
-      state: encodedState
-    });
+    // Redirect directly to Shopify OAuth page
+    res.redirect(authUrl);
 
   } catch (error) {
     console.error('Shopify auth error:', error);

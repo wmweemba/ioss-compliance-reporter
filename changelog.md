@@ -57,6 +57,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **OAuth URL Generation**: Resolved Shopify API adapter issues with manual URL construction
 - **Node.js Compatibility**: Added proper Node.js adapter import for Shopify API library
 - **Environment Loading**: Implemented lazy initialization to prevent environment variable conflicts
+- **OAuth Token Exchange**: Replaced Shopify API callback method with manual token exchange to avoid cookie dependencies
+- **Lead Model Validation**: Added 'unknown' as valid riskLevel enum value for Shopify-connected users
+- **OAuth Flow UX**: Updated auth endpoint to redirect directly to Shopify instead of returning JSON response
 
 ### Technical Improvements
 - **Architecture**: Modular service-based OAuth implementation with lazy initialization

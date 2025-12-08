@@ -19,7 +19,7 @@ const leadSchema = new mongoose.Schema({
   riskLevel: {
     type: String,
     required: [true, 'Risk level is required'],
-    enum: ['CRITICAL_RISK', 'MODERATE_RISK', 'LOW_RISK'],
+    enum: ['CRITICAL_RISK', 'MODERATE_RISK', 'LOW_RISK', 'unknown'],
     default: 'CRITICAL_RISK'
   },
   source: {

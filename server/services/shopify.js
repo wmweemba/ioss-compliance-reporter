@@ -75,11 +75,12 @@ export const handleOAuthCallback = async (query) => {
 
     // Validate HMAC signature
     const hmac = query.hmac;
-    delete query.hmac;
+    const queryParams = { ...query };
+    delete queryParams.hmac;
 
-    const queryString = Object.keys(query)
+    const queryString = Object.keys(queryParams)
       .sort()
-      .map(key => `${key}=${query[key]}`)
+      .map(key => `${key}=${queryParams[key]}`)
       .join('&');
 
     const calculatedHmac = crypto
@@ -91,16 +92,40 @@ export const handleOAuthCallback = async (query) => {
       throw new Error('HMAC validation failed');
     }
 
-    // Exchange authorization code for access token
-    const shopifyApi = initializeShopify();
-    const callbackResponse = await shopifyApi.auth.callback({
-      rawRequest: { query: { ...query, hmac } }
+    // Exchange authorization code for access token manually
+    const tokenUrl = `https://${query.shop}/admin/oauth/access_token`;
+    const tokenPayload = {
+      client_id: process.env.SHOPIFY_API_KEY,
+      client_secret: process.env.SHOPIFY_API_SECRET,
+      code: query.code
+    };
+
+    console.log(`🔄 Exchanging OAuth code for access token: ${query.shop}`);
+
+    const response = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(tokenPayload)
     });
+
+    if (!response.ok) {
+      throw new Error(`Token exchange failed: ${response.status} ${response.statusText}`);
+    }
+
+    const tokenData = await response.json();
+
+    if (!tokenData.access_token) {
+      throw new Error('No access token received from Shopify');
+    }
+
+    console.log(`✅ OAuth token exchange successful: ${query.shop}`);
 
     return {
       shop: query.shop,
-      accessToken: callbackResponse.session.accessToken,
-      scope: callbackResponse.session.scope
+      accessToken: tokenData.access_token,
+      scope: tokenData.scope
     };
   } catch (error) {
     console.error('OAuth callback error:', error);
