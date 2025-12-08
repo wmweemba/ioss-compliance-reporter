@@ -51,6 +51,34 @@ const leadSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  // Shopify Integration Fields
+  shopifyShopDomain: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    match: [
+      /^[\w-]+\.myshopify\.com$/,
+      'Please enter a valid Shopify domain'
+    ]
+  },
+  shopifyAccessToken: {
+    type: String,
+    select: false // Don't include in queries by default for security
+  },
+  shopifyScope: {
+    type: String
+  },
+  shopifyConnectedAt: {
+    type: Date
+  },
+  // Store last sync information
+  lastOrderSync: {
+    type: Date
+  },
+  totalOrdersSynced: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true,
@@ -61,6 +89,8 @@ const leadSchema = new mongoose.Schema({
 // Indexes for better query performance (email index handled by unique: true)
 leadSchema.index({ createdAt: -1 })
 leadSchema.index({ riskLevel: 1, createdAt: -1 })
+leadSchema.index({ shopifyShopDomain: 1 })
+leadSchema.index({ shopifyConnectedAt: -1 })
 
 // Pre-save middleware to update timestamps
 leadSchema.pre('save', function() {

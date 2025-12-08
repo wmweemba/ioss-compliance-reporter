@@ -57,7 +57,39 @@ mongod
 3. Add API key to `RESEND_API_KEY` in server `.env`
 4. Verify your sending domain (or use resend.dev for testing)
 
-### 4. Start Development Servers
+### 4. Shopify OAuth Setup (Optional)
+
+**For Shopify store integration (order fetching):**
+
+1. **Create Shopify Partner Account**:
+   - Go to [partners.shopify.com](https://partners.shopify.com)
+   - Sign up for a partner account
+
+2. **Create Shopify App**:
+   - In Partner Dashboard → Apps → "Create app"
+   - Choose "Public app" for production or "Custom app" for development
+   - App name: "VATpilot IOSS Compliance"
+
+3. **Configure App Settings**:
+   - **App URL**: `http://localhost:5000` (development) or your production URL
+   - **Allowed redirection URL(s)**: `http://localhost:5000/api/shopify/callback`
+   - **Scopes**: Select `read_orders` and `read_assigned_fulfillment_orders`
+
+4. **Get API Credentials**:
+   - Copy **API key** and **API secret** from your app dashboard
+   - Add to server `.env`:
+   ```bash
+   SHOPIFY_API_KEY=your_api_key_here
+   SHOPIFY_API_SECRET=your_api_secret_here
+   HOST_NAME=localhost:5000  # or your production domain
+   ```
+
+5. **Test OAuth Flow**:
+   - Visit: `http://localhost:5000/api/shopify/auth?shop=your-test-store`
+   - Complete OAuth authorization
+   - Verify redirect to dashboard with success status
+
+### 5. Start Development Servers
 
 #### Terminal 1 - Backend:
 ```bash
@@ -73,7 +105,7 @@ pnpm run dev
 # Client runs on http://localhost:5173
 ```
 
-### 5. Test the Integration
+### 6. Test the Integration
 
 1. Open http://localhost:5173
 2. Complete the risk quiz

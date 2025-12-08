@@ -8,11 +8,63 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Planned
 - User authentication and dashboard
-- Automated IOSS report generation
 - Multi-tenant SaaS architecture
 - Subscription billing system
 - Advanced analytics and insights
 - API documentation and developer portal
+
+---
+
+## [0.7.0] - 2025-12-08
+
+### Added
+- **Shopify OAuth 2.0 Integration**: Complete OAuth flow for Shopify store connections
+  - `services/shopify.js` - Shopify API configuration with secure OAuth handling
+  - `routes/shopify.js` - RESTful API endpoints for OAuth flow and order management
+  - `GET /api/shopify/auth` - Initiate OAuth authorization with state parameter security
+  - `GET /api/shopify/callback` - Handle OAuth callback with HMAC validation
+  - `GET /api/shopify/orders/:leadId` - Fetch and process orders for IOSS analysis
+  - `DELETE /api/shopify/disconnect/:leadId` - Secure disconnection of Shopify stores
+
+- **Enhanced Lead Model**: Extended MongoDB schema for Shopify integration
+  - Added `shopifyShopDomain` field with domain validation
+  - Added `shopifyAccessToken` field (encrypted, not returned in queries)
+  - Added `shopifyScope` and `shopifyConnectedAt` tracking fields
+  - Added `lastOrderSync` and `totalOrdersSynced` for sync monitoring
+  - Added database indexes for optimal query performance
+
+- **IOSS Compliance Logic**: Smart order processing for EU VAT requirements
+  - Automatic IOSS eligibility calculation (€22-€150 value range to EU destinations)
+  - EU country detection with complete 27-member-state coverage
+  - Order transformation for compliance analysis
+  - Real-time risk assessment integration
+
+- **Security Features**: Enterprise-grade OAuth security implementation
+  - HMAC signature validation for all Shopify webhooks
+  - Secure state parameter generation with timestamp expiry
+  - Base64 encoded state data with lead tracking
+  - Database-only token storage (no session dependencies)
+  - Automatic redirect to frontend dashboard with status parameters
+
+### Changed
+- **Environment Configuration**: Added Shopify OAuth environment variables
+  - `SHOPIFY_API_KEY` and `SHOPIFY_API_SECRET` for app credentials
+  - `HOST_NAME` for OAuth callback configuration
+  - `FRONTEND_URL` for secure redirect handling
+  - Updated `.env.example` with comprehensive Shopify setup guide
+
+### Fixed
+- **OAuth URL Generation**: Resolved Shopify API adapter issues with manual URL construction
+- **Node.js Compatibility**: Added proper Node.js adapter import for Shopify API library
+- **Environment Loading**: Implemented lazy initialization to prevent environment variable conflicts
+
+### Technical Improvements
+- **Architecture**: Modular service-based OAuth implementation with lazy initialization
+- **Error Handling**: Comprehensive error management with detailed logging
+- **Documentation**: Enhanced `SETUP.md` with complete Shopify Partner setup guide
+- **Dependencies**: Added `@shopify/shopify-api` v12.1.2 with Node.js adapter support
+- **Database Performance**: Strategic indexing for Shopify-related queries
+- **OAuth Security**: Manual URL construction for reliable cross-platform compatibility
 
 ---
 

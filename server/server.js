@@ -7,6 +7,7 @@ import fs from 'fs'
 import { spawn } from 'child_process'
 import { Resend } from 'resend'
 import Lead from './models/Lead.js'
+import shopifyRoutes from './routes/shopify.js'
 
 // Load environment variables only in development
 if (process.env.NODE_ENV !== 'production') {
@@ -127,6 +128,9 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   })
 })
+
+// Shopify OAuth routes
+app.use('/api/shopify', shopifyRoutes)
 
 // Sample CSV download route
 app.get('/api/reports/sample', (req, res) => {
