@@ -15,6 +15,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.8.0] - 2025-12-10
+
+### Added
+- **Order Synchronization System**: Complete Shopify order sync with local MongoDB storage
+  - `models/Order.js` - Comprehensive order schema with IOSS compliance fields
+  - `services/syncService.js` - Automated order fetching and transformation service
+  - `routes/api.js` - Dashboard API endpoints for order management
+  - Automatic initial sync on OAuth completion (100 orders)
+  - Incremental sync capability for ongoing order updates
+  - Bulk write operations for efficient database updates
+
+- **IOSS Compliance Analysis**: Automated compliance calculation and reporting
+  - Real-time IOSS eligibility determination (€22-€150 EU orders)
+  - EU country detection with comprehensive 27-member coverage
+  - VAT requirement analysis for all EU destinations
+  - Order categorization by compliance status and risk level
+  - Advanced filtering by country, value range, and compliance status
+
+- **Dashboard API Endpoints**: Complete REST API for order data access
+  - `GET /api/orders` - Paginated order listing with advanced filtering
+  - `GET /api/orders/summary` - IOSS compliance summary and statistics
+  - `POST /api/orders/sync` - Manual sync trigger (incremental/full)
+  - `GET /api/orders/countries` - Available countries for filtering
+  - `GET /api/orders/:id` - Detailed individual order information
+
+- **Advanced Order Schema**: Comprehensive data model for compliance analysis
+  - Shopify order metadata (ID, number, status, timestamps)
+  - Customer information (email, country, shipping address)
+  - Line item details (products, quantities, pricing, vendors)
+  - IOSS compliance flags (eligible, EU destination, VAT required)
+  - Sync tracking (last sync, analysis timestamps)
+
+### Enhanced
+- **OAuth Flow Integration**: Seamless order sync on store connection
+  - Automatic order sync triggered after successful OAuth
+  - Enhanced Lead model with sync statistics tracking
+  - Error handling for sync failures during OAuth process
+  - Comprehensive logging for sync operations and results
+
+### Technical Improvements
+- **Database Performance**: Strategic indexing for efficient order queries
+  - Compound indexes for shop-based queries and date ranges
+  - Optimized aggregation pipelines for compliance summaries
+  - Efficient bulk operations for large order datasets
+- **Data Modeling**: Comprehensive order transformation from Shopify format
+  - Automatic IOSS eligibility calculation on save
+  - Virtual fields for formatted values and compliance checks
+  - Static methods for aggregated compliance reporting
+- **API Architecture**: RESTful design with comprehensive filtering and pagination
+  - Advanced query parameters for flexible data access
+  - Structured response format with metadata and pagination info
+  - Error handling with detailed logging and user feedback
+
+---
+
 ## [0.7.0] - 2025-12-08
 
 ### Added

@@ -5,6 +5,7 @@ import {
   generateState,
   fetchOrders 
 } from '../services/shopify.js';
+import { syncOrders } from '../services/syncService.js';
 import Lead from '../models/Lead.js';
 
 const router = express.Router();
@@ -119,6 +120,22 @@ router.get('/callback', async (req, res) => {
     await lead.save();
 
     console.log(`Shopify store connected: ${authResult.shop} for lead: ${lead._id}`);
+
+    // Trigger initial order sync after successful OAuth
+    try {
+      console.log(`🚀 Starting initial order sync for ${authResult.shop}`);
+      const syncResult = await syncOrders(
+        lead._id, 
+        authResult.accessToken, 
+        authResult.shop,
+        { limit: 100 } // Fetch more orders on initial sync
+      );
+      
+      console.log(`✅ Initial sync completed:`, syncResult);
+    } catch (syncError) {
+      console.error(`❌ Initial order sync failed for ${authResult.shop}:`, syncError.message);
+      // Don't fail the OAuth flow if sync fails, just log the error
+    }
 
     // Redirect to frontend dashboard with success status
     const frontendUrl = process.env.NODE_ENV === 'production' 
