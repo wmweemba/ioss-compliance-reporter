@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 import { AlertTriangle, CheckCircle, Mail, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
@@ -125,6 +126,7 @@ const DEFAULT_SCENARIO = {
  * @component
  */
 export default function RiskQuiz() {
+  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const [showResults, setShowResults] = useState(false)

@@ -15,6 +15,64 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.9.0] - 2025-12-10
+
+### Added
+- **Beta Dashboard Component**: Complete React dashboard for order analysis and IOSS compliance
+  - `client/src/components/Dashboard.jsx` - Responsive dashboard with order table and statistics
+  - Real-time IOSS compliance status with color-coded risk indicators
+  - Stats overview cards (Total Orders, High Risk, IOSS Eligible, Low Value)
+  - Manual order sync and export functionality
+  - Comprehensive error handling and loading states
+
+- **Email-to-Dashboard Workflow**: Complete beta user activation flow
+  - Personalized dashboard links with `leadId` parameter in welcome emails
+  - Enhanced email templates with "🚀 Join Beta Program" call-to-action buttons
+  - Dynamic dashboard URLs for seamless user onboarding
+  - Professional welcome screens for new beta users
+
+- **Enhanced User Onboarding**: Improved dashboard experience for beta testers
+  - Welcome screen with clear value proposition and connection steps
+  - Trust indicators and security messaging for Shopify OAuth
+  - Guided empty states with helpful tips for first-time users
+  - Professional "Stripe-like" design aesthetic with Tailwind CSS
+
+- **React Router Integration**: Complete SPA routing implementation
+  - `/dashboard` route with URL parameter handling
+  - Automatic leadId extraction from URL search parameters
+  - Fallback routing with proper navigation guards
+  - seamless integration with existing quiz workflow
+
+### Enhanced
+- **Email System Improvements**: Better delivery reliability and error handling
+  - Improved Resend API response handling with detailed logging
+  - Fixed email delivery issues for non-Gmail addresses
+  - Enhanced error reporting for email sending failures
+  - Better email ID tracking in API responses
+
+- **Order Management**: Enhanced order sync and display capabilities
+  - Manual sync trigger with progress feedback
+  - Improved API response format handling
+  - Better error states for authentication and connection issues
+  - Enhanced order filtering and pagination support
+
+### Technical Improvements
+- **Frontend Architecture**: Modern React patterns and best practices
+  - React 19 with hooks for state management
+  - React Router DOM for SPA navigation
+  - Custom hooks for API integration and error handling
+  - Responsive design with mobile-first approach
+- **Error Handling**: Comprehensive error boundaries and user feedback
+  - Toast notifications for user actions and system status
+  - Detailed console logging for development debugging
+  - Graceful fallbacks for API failures and network issues
+- **API Integration**: Robust client-server communication
+  - Centralized API configuration with environment detection
+  - Automatic retry logic for failed requests
+  - Proper loading states and skeleton UI components
+
+---
+
 ## [0.8.0] - 2025-12-10
 
 ### Added

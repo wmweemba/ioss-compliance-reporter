@@ -415,7 +415,7 @@ app.post('/api/leads', async (req, res) => {
 
     // Prepare email content based on risk level
     console.log('📧 Generating email content for risk level:', riskLevel)
-    const emailContent = generateEmailContent(riskLevel, email)
+    const emailContent = generateEmailContent(riskLevel, email, savedLead._id)
     console.log('📧 Email content generated successfully')
 
     // Send email via Resend (if available)
@@ -425,7 +425,6 @@ app.post('/api/leads', async (req, res) => {
         const emailResponse = await resend.emails.send({
           from: fromEmail || 'VATpilot Support <vatpilot@mynexusgroup.com>',
           to: [email],
-          bcc: ['wmweemba@gmail.com'],
           subject: emailContent.subject,
           html: emailContent.html,
           headers: {
@@ -449,14 +448,15 @@ app.post('/api/leads', async (req, res) => {
         savedLead.emailSentAt = new Date()
         await savedLead.save()
 
-        console.log(`✅ Email sent successfully to ${email}:`, emailResponse.id)
+        console.log(`✅ Email sent successfully to ${email}:`, emailResponse)
+        console.log('📧 Full email response:', JSON.stringify(emailResponse, null, 2))
 
         // Return success response
         res.status(201).json({
           success: true,
           message: 'Lead created and email sent successfully',
           leadId: savedLead._id,
-          emailId: emailResponse.id,
+          emailId: emailResponse?.id || emailResponse?.data?.id || 'sent',
           riskLevel: savedLead.riskLevel
         })
 
@@ -565,9 +565,10 @@ app.get('/api/leads', async (req, res) => {
 /**
  * Generate professional 'System Report' style email template
  */
-function generateEmailContent(riskLevel, email) {
+function generateEmailContent(riskLevel, email, leadId = null) {
   const getEmailTemplate = (riskLevel) => {
     const siteUrl = 'https://vatpilot.netlify.app'
+    const dashboardUrl = leadId ? `${siteUrl}/dashboard?leadId=${leadId}` : siteUrl
     
     if (riskLevel === 'CRITICAL_RISK') {
       return {
@@ -636,8 +637,8 @@ function generateEmailContent(riskLevel, email) {
                             <table cellpadding="0" cellspacing="0" border="0">
                               <tr>
                                 <td style="background-color: #dc2626; border-radius: 6px;">
-                                  <a href="${siteUrl}" style="display: block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold;">
-                                    Activate Compliance Automation
+                                  <a href="${dashboardUrl}" style="display: block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold;">
+                                    🚀 Join Beta Program
                                   </a>
                                 </td>
                               </tr>
@@ -759,8 +760,8 @@ function generateEmailContent(riskLevel, email) {
                             <table cellpadding="0" cellspacing="0" border="0">
                               <tr>
                                 <td style="background-color: #d97706; border-radius: 6px;">
-                                  <a href="${siteUrl}" style="display: block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold;">
-                                    Activate Compliance Automation
+                                  <a href="${dashboardUrl}" style="display: block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold;">
+                                    🚀 Join Beta Program
                                   </a>
                                 </td>
                               </tr>
@@ -858,6 +859,27 @@ function generateEmailContent(riskLevel, email) {
                     <p style="margin: 0 0 20px; color: #4a5568; font-size: 16px; line-height: 1.6;">
                       Your shipping profile appears to be compliant. We'll monitor regulation changes and notify you of any updates.
                     </p>
+                    
+                    <p style="margin: 0 0 20px; color: #4a5568; font-size: 16px; line-height: 1.6; background-color: #f0f9ff; padding: 15px; border-radius: 6px; border-left: 4px solid #0ea5e9;">
+                      <strong>✅ You have been added to our Beta program.</strong> Access your compliance dashboard below.
+                    </p>
+                    
+                    <!-- CTA Button -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 30px 0;">
+                      <tr>
+                        <td align="center">
+                          <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td style="background-color: #059669; border-radius: 6px;">
+                                <a href="${dashboardUrl}" style="display: block; padding: 15px 30px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold;">
+                                  🚀 Access Beta Dashboard
+                                </a>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
                     
                   </td>
                 </tr>
