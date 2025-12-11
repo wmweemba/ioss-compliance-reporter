@@ -6,6 +6,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+- **Shop Domain Input Dialog**: Enhanced Shopify OAuth connection workflow
+  - Modal dialog for collecting Shopify store domain before OAuth redirect
+  - Input validation and domain sanitization (removes protocols, validates format)
+  - Clear user instructions and error messaging
+  - Enter key support for quick submission
+
+- **AI Coding Agent Documentation**: Comprehensive development guide
+  - `.github/copilot-instructions.md` - Complete project architecture documentation
+  - Development workflows, patterns, and best practices guide
+  - Version evolution history and breaking changes documentation
+  - Platform migration notes and deployment specifics
+
+### Enhanced
+- **Dashboard Error Handling**: Improved Shopify connection flow and user experience
+  - Contextual error detection for missing Shopify store connections
+  - Smart sync button that adapts to connection state (shows "Connect Shopify" when needed)
+  - Better error messaging for authentication and connection issues
+  - Automatic OAuth redirect for missing connections
+
+- **Session Management**: Magic link persistence and user session handling
+  - localStorage-based session persistence for dashboard access
+  - Improved leadId parameter handling from URL and storage
+  - Enhanced logout functionality with proper session cleanup
+  - Better navigation guards and fallback routing
+
+- **User Experience**: Professional dashboard interface improvements
+  - Improved loading states and error boundaries
+  - Better visual feedback for connection status
+  - Enhanced onboarding flow for first-time users
+  - Cleaner error messages and user guidance
+
+### Fixed
+- **Shopify OAuth Integration**: Resolved "Shop parameter is required" error
+  - Fixed missing shop domain parameter in OAuth redirect
+  - Added proper domain validation and formatting
+  - Improved error handling for OAuth callback failures
+
 ### Planned
 - User authentication and dashboard
 - Multi-tenant SaaS architecture
