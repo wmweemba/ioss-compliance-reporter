@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { AlertTriangle, Download, ExternalLink, TrendingUp, Package, Shield, Loader2, RefreshCw } from 'lucide-react'
+import { AlertTriangle, Download, ExternalLink, TrendingUp, Package, Shield, Loader2, RefreshCw, LogOut } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -74,6 +74,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [syncing, setSyncing] = useState(false)
+  const [currentLeadId, setCurrentLeadId] = useState(null)
   const [stats, setStats] = useState({
     total: 0,
     highRisk: 0,
@@ -81,34 +82,59 @@ const Dashboard = () => {
     lowValue: 0
   })
 
-  // Get leadId from URL parameters
-  const leadId = searchParams.get('leadId')
-  
-  // Debug logging
-  console.log('🎯 Dashboard loaded with leadId:', leadId)
-  console.log('🎯 Current URL:', window.location.href)
-  console.log('🎯 Search params:', Object.fromEntries(searchParams.entries()))
-
-  // Redirect to home if no leadId provided
+  // Magic Link Session Persistence Logic
   useEffect(() => {
-    if (!leadId) {
-      toast.error('No store ID provided. Please use a valid dashboard link.')
-      navigate('/')
-      return
+    const urlLeadId = searchParams.get('leadId')
+    
+    if (urlLeadId) {
+      // Save leadId to localStorage and clean URL
+      console.log('🔑 Saving leadId to localStorage:', urlLeadId)
+      localStorage.setItem('vat_lead_id', urlLeadId)
+      setCurrentLeadId(urlLeadId)
+      
+      // Clean the URL by removing the leadId query parameter
+      const newUrl = new URL(window.location)
+      newUrl.searchParams.delete('leadId')
+      window.history.replaceState({}, '', newUrl.pathname + newUrl.search)
+      
+    } else {
+      // Check localStorage for existing session
+      const storedLeadId = localStorage.getItem('vat_lead_id')
+      console.log('🔍 Checking localStorage for leadId:', storedLeadId)
+      
+      if (storedLeadId) {
+        console.log('✅ Found stored leadId, using it:', storedLeadId)
+        setCurrentLeadId(storedLeadId)
+      } else {
+        console.log('❌ No leadId found in URL or localStorage, redirecting to home')
+        toast.error('No active session found. Please use a valid dashboard link.')
+        navigate('/')
+        return
+      }
     }
-  }, [leadId, navigate])
+  }, [searchParams, navigate])
+
+  /**
+   * Sign out functionality
+   */
+  const signOut = () => {
+    console.log('🚪 Signing out user')
+    localStorage.removeItem('vat_lead_id')
+    toast.success('Signed out successfully')
+    navigate('/')
+  }
 
   /**
    * Fetch orders from the API
    */
   const fetchOrders = async (showToast = false) => {
-    if (!leadId) return
+    if (!currentLeadId) return
     
     try {
       setLoading(true)
       setError(null)
       
-      const response = await apiClient.get(`/orders?leadId=${leadId}`)
+      const response = await apiClient.get(`/orders?leadId=${currentLeadId}`)
       const ordersData = response.data.data?.orders || response.data.orders || response.data || []
       
       setOrders(ordersData)
@@ -129,13 +155,17 @@ const Dashboard = () => {
       console.error('Error fetching orders:', err)
       setError(err)
       
-      // Handle authentication errors
-      if (err.response?.status === 401 || err.response?.status === 403) {
+      // Handle specific error cases
+      if (err.response?.status === 400 && err.response?.data?.error?.includes('No Shopify store connected')) {
+        setError({ type: 'auth', message: 'Please connect your Shopify store to view orders' })
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        setError({ type: 'auth', message: 'Please connect your Shopify store to view orders' })
+      } else if (err.response?.status === 404) {
         setError({ type: 'auth', message: 'Please connect your Shopify store to view orders' })
       } else {
         setError({ 
           type: 'api', 
-          message: err.response?.data?.message || 'Failed to load orders. Please try again.' 
+          message: err.response?.data?.error || err.response?.data?.message || 'Failed to load orders. Please try again.' 
         })
       }
     } finally {
@@ -144,14 +174,20 @@ const Dashboard = () => {
   }
 
   /**
-   * Trigger manual order sync
+   * Trigger manual order sync or Shopify connection
    */
   const syncOrders = async () => {
-    if (!leadId) return
+    if (!currentLeadId) return
+    
+    // If we're in an error state that indicates no Shopify connection, redirect to connect
+    if (error?.type === 'auth') {
+      connectShopify()
+      return
+    }
     
     try {
       setSyncing(true)
-      const response = await apiClient.post('/orders/sync', { leadId })
+      const response = await apiClient.post('/orders/sync', { leadId: currentLeadId })
       
       toast.success(`Sync completed: ${response.data.data?.processed || 0} orders processed`)
       
@@ -160,7 +196,17 @@ const Dashboard = () => {
       
     } catch (err) {
       console.error('Error syncing orders:', err)
-      toast.error(err.response?.data?.message || 'Failed to sync orders')
+      
+      // Check if error indicates no Shopify connection
+      if (err.response?.status === 400 && (
+        err.response?.data?.error?.includes('No Shopify store connected') ||
+        err.response?.data?.error?.includes('leadId parameter is required')
+      )) {
+        toast.error('Please connect your Shopify store first')
+        connectShopify()
+      } else {
+        toast.error(err.response?.data?.error || err.response?.data?.message || 'Failed to sync orders')
+      }
     } finally {
       setSyncing(false)
     }
@@ -199,11 +245,11 @@ const Dashboard = () => {
    * Connect to Shopify
    */
   const connectShopify = () => {
-    if (!leadId) {
+    if (!currentLeadId) {
       toast.error('No store ID available for connection')
       return
     }
-    window.location.href = `${API_BASE_URL}/shopify/auth?leadId=${leadId}`
+    window.location.href = `${API_BASE_URL}/shopify/auth?leadId=${currentLeadId}`
   }
 
   /**
@@ -227,10 +273,13 @@ const Dashboard = () => {
     })
   }
 
-  // Load orders on component mount
+  // Load orders when leadId is available
   useEffect(() => {
-    fetchOrders()
-  }, [])
+    if (currentLeadId) {
+      console.log('🔄 Loading orders for leadId:', currentLeadId)
+      fetchOrders()
+    }
+  }, [currentLeadId])
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -240,7 +289,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">VATpilot Beta Dashboard 🚀</h1>
-            <p className="text-gray-600 mt-1">Monitor your IOSS compliance status {leadId && `• Lead ID: ${leadId}`}</p>
+            <p className="text-gray-600 mt-1">Monitor your IOSS compliance status {currentLeadId && `• Session Active`}</p>
           </div>
           
           <div className="flex gap-3">
@@ -258,13 +307,31 @@ const Dashboard = () => {
               onClick={syncOrders}
               disabled={syncing}
             >
-              <TrendingUp className={`w-4 h-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
-              {syncing ? 'Syncing...' : 'Sync Orders'}
+              {error?.type === 'auth' ? (
+                <>
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Connect Shopify
+                </>
+              ) : (
+                <>
+                  <TrendingUp className={`w-4 h-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
+                  {syncing ? 'Syncing...' : 'Sync Orders'}
+                </>
+              )}
             </Button>
             
             <Button onClick={downloadReport}>
               <Download className="w-4 h-4 mr-2" />
               Download IOSS Report
+            </Button>
+            
+            <Button
+              variant="outline"
+              onClick={signOut}
+              className="text-gray-600 hover:text-red-600"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
             </Button>
           </div>
         </div>
