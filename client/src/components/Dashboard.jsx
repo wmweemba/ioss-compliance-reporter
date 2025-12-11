@@ -4,6 +4,8 @@ import { AlertTriangle, Download, ExternalLink, TrendingUp, Package, Shield, Loa
 import { toast } from 'sonner'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { apiClient, API_BASE_URL } from '@/lib/api'
 
 /**
@@ -75,6 +77,11 @@ const Dashboard = () => {
   const [error, setError] = useState(null)
   const [syncing, setSyncing] = useState(false)
   const [currentLeadId, setCurrentLeadId] = useState(null)
+  
+  // Shop connection dialog state
+  const [showShopDialog, setShowShopDialog] = useState(false)
+  const [shopDomain, setShopDomain] = useState('')
+  
   const [stats, setStats] = useState({
     total: 0,
     highRisk: 0,
@@ -242,14 +249,42 @@ const Dashboard = () => {
   }
 
   /**
-   * Connect to Shopify
+   * Connect to Shopify - show shop domain input dialog
    */
   const connectShopify = () => {
     if (!currentLeadId) {
       toast.error('No store ID available for connection')
       return
     }
-    window.location.href = `${API_BASE_URL}/shopify/auth?leadId=${currentLeadId}`
+    setShowShopDialog(true)
+  }
+
+  /**
+   * Handle Shopify connection with shop domain
+   */
+  const handleShopifyConnection = () => {
+    if (!shopDomain.trim()) {
+      toast.error('Please enter your shop domain')
+      return
+    }
+
+    // Clean and validate shop domain
+    let cleanDomain = shopDomain.trim().toLowerCase()
+    
+    // Remove protocol if present
+    cleanDomain = cleanDomain.replace(/^https?:\/\//, '')
+    
+    // Remove .myshopify.com if present (will be added by server)
+    cleanDomain = cleanDomain.replace(/\.myshopify\.com$/, '')
+    
+    // Basic validation
+    if (!/^[a-z0-9\-]+$/.test(cleanDomain)) {
+      toast.error('Invalid shop domain. Please enter only your shop name (e.g., "mystore")')
+      return
+    }
+
+    // Redirect to Shopify OAuth with shop parameter
+    window.location.href = `${API_BASE_URL}/shopify/auth?shop=${cleanDomain}&leadId=${currentLeadId}`
   }
 
   /**
@@ -536,6 +571,54 @@ const Dashboard = () => {
         </Card>
 
       </div>
+      
+      {/* Shop Domain Input Dialog */}
+      <Dialog open={showShopDialog} onOpenChange={setShowShopDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Connect Your Shopify Store</DialogTitle>
+            <DialogDescription>
+              Enter your Shopify store domain to connect and import your orders for IOSS compliance analysis.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div>
+              <label htmlFor="shopDomain" className="block text-sm font-medium mb-2">
+                Shop Domain
+              </label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="shopDomain"
+                  placeholder="your-store-name"
+                  value={shopDomain}
+                  onChange={(e) => setShopDomain(e.target.value)}
+                  className="flex-1"
+                  onKeyPress={(e) => e.key === 'Enter' && handleShopifyConnection()}
+                />
+                <span className="text-sm text-gray-500">.myshopify.com</span>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Just enter your store name (e.g., "mystore" for mystore.myshopify.com)
+              </p>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowShopDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleShopifyConnection}>
+              Connect Store
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
     </div>
   )
 }
