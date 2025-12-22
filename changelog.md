@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+- **📊 Smart Report Generation**: Real user data prioritization with intelligent fallbacks
+  - Created `server/controllers/reportController.js` for user-specific IOSS report generation
+  - **Real Data First**: Uses actual MongoDB orders when user has IOSS-eligible data (€22-€150 EU orders)
+  - **Smart Fallback**: Automatically uses sample data with clear labeling when user has no orders
+  - **Dynamic Filenames**: Real data → `IOSS_Report_[Date].csv`, Sample data → `SAMPLE_Report.csv`
+  - **Beta Testing Ready**: Ensures beta testers see their actual compliance data, not fake data
+
+### Enhanced
+- **🎯 Report Controller Architecture**: Modern controller-based API design
+  - Moved report logic from static routes to dedicated controller functions
+  - Improved error handling with detailed logging and user feedback
+  - Enhanced CSV generation with proper EU VAT rates (27 member states)
+  - Automatic temporary file cleanup after downloads
+
+- **📱 Dashboard UX Improvements**: Smarter report download experience
+  - Updated frontend to use user-specific report endpoint (`/api/reports/generate?leadId=${leadId}`)
+  - Dynamic success messages based on report type (real vs. sample data)
+  - Automatic filename detection from response headers
+  - Session validation before report generation
+
+### Technical Improvements
+- **🏗️ API Route Modernization**: Clean separation of concerns
+  - New routes: `GET /api/reports/generate` (user-specific), `GET /api/reports/sample` (legacy support)
+  - Removed static report logic from main server.js file
+  - Proper controller imports and modular architecture
+  - Maintained backward compatibility with existing sample endpoint
+
 ---
 
 ## [0.9.1] - 2025-12-22

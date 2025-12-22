@@ -2,6 +2,7 @@ import express from 'express';
 import Order from '../models/Order.js';
 import Lead from '../models/Lead.js';
 import { incrementalSync, getIOSSComplianceSummary } from '../services/syncService.js';
+import { generateUserReport, getStaticSampleReport } from '../controllers/reportController.js';
 
 const router = express.Router();
 
@@ -315,5 +316,18 @@ router.get('/orders/:orderId', async (req, res) => {
     });
   }
 });
+
+/**
+ * GET /api/reports/generate
+ * Generate IOSS compliance report for specific user
+ * Uses real MongoDB data if available, falls back to sample data
+ */
+router.get('/reports/generate', generateUserReport);
+
+/**
+ * GET /api/reports/sample
+ * Get static sample report (legacy support)
+ */
+router.get('/reports/sample', getStaticSampleReport);
 
 export default router;

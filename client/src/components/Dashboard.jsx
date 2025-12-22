@@ -223,28 +223,49 @@ const Dashboard = () => {
    * Download IOSS report
    */
   const downloadReport = async () => {
+    if (!currentLeadId) {
+      toast.error('No active session found. Please reconnect.')
+      return
+    }
+
     try {
-      const response = await fetch(`${API_BASE_URL}/reports/sample`)
+      const response = await fetch(`${API_BASE_URL}/reports/generate?leadId=${currentLeadId}`)
       
       if (!response.ok) {
         throw new Error('Failed to download report')
+      }
+      
+      // Get filename from response headers or use default
+      const contentDisposition = response.headers.get('Content-Disposition')
+      let filename = 'ioss-report.csv'
+      
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/)
+        if (filenameMatch) {
+          filename = filenameMatch[1]
+        }
       }
       
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `ioss-report-${new Date().toISOString().split('T')[0]}.csv`
+      a.download = filename
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
       window.URL.revokeObjectURL(url)
       
-      toast.success('IOSS report downloaded successfully')
+      // Show different messages based on whether this is real or sample data
+      if (filename.includes('SAMPLE')) {
+        toast.success('📋 Sample IOSS report downloaded - Connect orders to get your real data')
+      } else {
+        toast.success('📊 Your IOSS compliance report downloaded successfully')
+      }
       
     } catch (err) {
       console.error('Error downloading report:', err)
-      toast.error('Failed to download report')
+      toast.error('Failed to download report. Please try again.')
     }
   }
 
