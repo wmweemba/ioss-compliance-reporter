@@ -6,19 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+---
+
+## [0.9.1] - 2025-12-22
+
 ### Fixed
-- **Shopify OAuth Production Error**: Resolved "Failed to generate OAuth URL" error in production environment
-  - Added missing Shopify environment variables to server environment validation logging
-  - Enhanced Shopify service error logging with detailed environment variable status
-  - Improved OAuth URL generation debugging with step-by-step logging
-  - Added production-specific HOST_NAME fallback logic for Render deployment
-  - Updated render-env-vars.txt with required Shopify credentials for production deployment
+- **🎉 SHOPIFY OAUTH PRODUCTION SUCCESS**: Fully resolved Shopify integration for beta testing
+  - **Environment Variables**: Fixed missing SHOPIFY_API_KEY in Render production environment (typo: HOPIFY_API_KEY → SHOPIFY_API_KEY)
+  - **Redirect URLs**: Updated Shopify Partner Dashboard app configuration to include production callback URL (`https://vatpilot.onrender.com/api/shopify/callback`)
+  - **App Version Management**: Created new app version in Shopify Dev Dashboard with proper production URLs
+  - **Complete OAuth Flow**: Production Shopify OAuth integration now working end-to-end for beta testing
 
 ### Enhanced
-- **Production Debugging**: Comprehensive error logging for Shopify integration issues
-  - Detailed environment variable presence checking on server startup
-  - Step-by-step OAuth URL generation logging for production troubleshooting
-  - Enhanced error messages with specific failure context and environment details
+- **Production Debugging**: Comprehensive error logging for Shopify integration troubleshooting
+  - Detailed environment variable validation and presence checking on server startup
+  - Step-by-step OAuth URL generation logging with specific error context
+  - Enhanced error messages showing exact missing credentials and configuration issues
+  - Production-specific HOST_NAME fallback logic for Render deployment
+
+### Production Ready
+- **Beta Dashboard**: Successfully deployed and functional for beta user testing
+  - Complete magic link authentication flow working in production
+  - Shopify store connection and OAuth integration fully operational  
+  - Order sync capability ready for real store testing
+  - Professional dashboard UI with IOSS compliance analysis
 
 ### Added
 - **Shop Domain Input Dialog**: Enhanced Shopify OAuth connection workflow
