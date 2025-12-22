@@ -320,35 +320,96 @@ function generateCSVContent(data) {
 
 /**
  * Get static sample report (legacy endpoint support)
+ * Serves file directly to prevent browser download loops
  */
 export const getStaticSampleReport = async (req, res) => {
   try {
     const reportPath = path.join(__dirname, '..', 'reports', 'ioss_return_2025_12.csv');
     
-    console.log('📊 Checking for static sample report at:', reportPath);
+    console.log('📊 Static sample report requested');
+    console.log('🔍 Checking for file at:', reportPath);
 
     if (fs.existsSync(reportPath)) {
-      console.log('📤 Sending existing static sample report');
-      res.download(reportPath, 'VATpilot_Sample_Report.csv', (err) => {
-        if (err) {
-          console.error('❌ Download error:', err);
-          res.status(500).json({ error: 'Download failed: ' + err.message });
-        } else {
-          console.log('📤 Static sample report downloaded successfully');
-        }
-      });
+      console.log('✅ Static sample report found, serving file');
+      
+      // Read file content
+      const fileContent = fs.readFileSync(reportPath, 'utf8');
+      const filename = 'VATpilot_Sample_Report.csv';
+      
+      // Set proper headers for direct download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
+      // Send file content directly
+      res.send(fileContent);
+      
+      console.log('📤 Static sample report sent successfully');
+      
     } else {
-      console.log('❌ Static sample report file not found');
-      res.status(404).json({
-        error: 'Sample report not available',
-        message: 'Please generate the sample data first by running: npm run generate-ioss-report'
-      });
+      console.log('❌ Static sample report file not found, generating fallback');
+      
+      // Generate a simple fallback CSV instead of showing error page
+      const fallbackData = [
+        {
+          'Member State of Destination': 'DE',
+          'Total Net Value (EUR)': 840.34,
+          'Total VAT Amount (EUR)': 159.66,
+          'Number of Supplies': 15,
+          'VAT Rate (%)': 19
+        },
+        {
+          'Member State of Destination': 'FR',
+          'Total Net Value (EUR)': 625.00,
+          'Total VAT Amount (EUR)': 125.00,
+          'Number of Supplies': 8,
+          'VAT Rate (%)': 20
+        },
+        {
+          'Member State of Destination': 'ES',
+          'Total Net Value (EUR)': 520.66,
+          'Total VAT Amount (EUR)': 109.34,
+          'Number of Supplies': 6,
+          'VAT Rate (%)': 21
+        }
+      ];
+      
+      const csvContent = generateCSVContent(fallbackData);
+      const filename = 'VATpilot_Sample_Report.csv';
+      
+      // Set proper headers for direct download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
+      // Send generated CSV content
+      res.send(csvContent);
+      
+      console.log('📤 Fallback sample report generated and sent');
     }
+    
   } catch (error) {
     console.error('❌ Static sample report endpoint error:', error);
-    res.status(500).json({
-      error: 'Failed to retrieve sample report',
-      message: error.message
-    });
+    
+    // Even on error, try to send a minimal CSV instead of JSON error
+    try {
+      const errorCsv = 'Error,Message\n"Sample Report Error","Please contact support"\n';
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="VATpilot_Error_Report.csv"');
+      res.send(errorCsv);
+      
+      console.log('📤 Error CSV sent instead of JSON error');
+    } catch (fallbackError) {
+      console.error('❌ Fallback error response failed:', fallbackError);
+      res.status(500).json({
+        error: 'Failed to retrieve sample report',
+        message: error.message
+      });
+    }
   }
 };
