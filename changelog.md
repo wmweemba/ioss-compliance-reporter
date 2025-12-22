@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+- **🐛 Email Download Loop Issue**: Resolved infinite download loops when clicking "Download Sample CSV" from emails
+  - **Root Cause**: `res.download()` method causing browser refresh loops on direct email links
+  - **Solution**: Direct content serving with proper HTTP headers to prevent re-requests
+  - **Headers Added**: Cache-Control, Pragma, Expires directives for browser cache control
+  - **Fallback Logic**: Generate sample CSV if static file missing (prevents 404 error pages)
+  - **Error Handling**: Send CSV content even on server errors (prevents JSON responses in browser)
+  - **User Impact**: Email "Download Sample CSV" buttons now work with single download only
+
 ### Added
 - **📊 Smart Report Generation**: Real user data prioritization with intelligent fallbacks
   - Created `server/controllers/reportController.js` for user-specific IOSS report generation
