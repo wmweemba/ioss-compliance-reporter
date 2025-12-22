@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+- **Shopify OAuth Production Error**: Resolved "Failed to generate OAuth URL" error in production environment
+  - Added missing Shopify environment variables to server environment validation logging
+  - Enhanced Shopify service error logging with detailed environment variable status
+  - Improved OAuth URL generation debugging with step-by-step logging
+  - Added production-specific HOST_NAME fallback logic for Render deployment
+  - Updated render-env-vars.txt with required Shopify credentials for production deployment
+
+### Enhanced
+- **Production Debugging**: Comprehensive error logging for Shopify integration issues
+  - Detailed environment variable presence checking on server startup
+  - Step-by-step OAuth URL generation logging for production troubleshooting
+  - Enhanced error messages with specific failure context and environment details
+
 ### Added
 - **Shop Domain Input Dialog**: Enhanced Shopify OAuth connection workflow
   - Modal dialog for collecting Shopify store domain before OAuth redirect

@@ -26,6 +26,9 @@ console.log('MONGO_URI present:', !!process.env.MONGO_URI)
 console.log('RESEND_API_KEY present:', !!process.env.RESEND_API_KEY)
 console.log('FROM_EMAIL present:', !!process.env.FROM_EMAIL)
 console.log('CORS_ORIGIN present:', !!process.env.CORS_ORIGIN)
+console.log('SHOPIFY_API_KEY present:', !!process.env.SHOPIFY_API_KEY)
+console.log('SHOPIFY_API_SECRET present:', !!process.env.SHOPIFY_API_SECRET)
+console.log('HOST_NAME present:', !!process.env.HOST_NAME)
 
 // Initialize Express app
 const app = express()

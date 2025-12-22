@@ -11,21 +11,32 @@ let shopify = null;
  */
 const initializeShopify = () => {
   if (!shopify) {
+    // Log detailed environment check
+    console.log('🔧 Shopify Environment Check:');
+    console.log('SHOPIFY_API_KEY present:', !!process.env.SHOPIFY_API_KEY);
+    console.log('SHOPIFY_API_SECRET present:', !!process.env.SHOPIFY_API_SECRET);
+    console.log('HOST_NAME:', process.env.HOST_NAME);
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    
     if (!process.env.SHOPIFY_API_KEY || !process.env.SHOPIFY_API_SECRET) {
-      throw new Error('Missing Shopify credentials. Please set SHOPIFY_API_KEY and SHOPIFY_API_SECRET environment variables.');
+      const error = new Error('Missing Shopify credentials. Please set SHOPIFY_API_KEY and SHOPIFY_API_SECRET environment variables.');
+      console.error('❌ Shopify initialization failed:', error.message);
+      throw error;
     }
+    
+    const hostName = process.env.HOST_NAME || (process.env.NODE_ENV === 'production' ? 'vatpilot.onrender.com' : 'localhost:5000');
     
     shopify = shopifyApi({
       apiKey: process.env.SHOPIFY_API_KEY,
       apiSecretKey: process.env.SHOPIFY_API_SECRET,
       scopes: ['read_orders', 'read_assigned_fulfillment_orders'],
-      hostName: process.env.HOST_NAME || 'localhost:5000',
+      hostName: hostName,
       hostScheme: process.env.NODE_ENV === 'production' ? 'https' : 'http',
       apiVersion: ApiVersion.October24,
       isEmbeddedApp: false,
     });
     
-    console.log('✅ Shopify API initialized successfully');
+    console.log('✅ Shopify API initialized successfully with host:', hostName);
   }
   return shopify;
 };
@@ -38,14 +49,23 @@ const initializeShopify = () => {
  */
 export const getOAuthUrl = (shop, state) => {
   try {
+    console.log('🔄 Generating OAuth URL for shop:', shop);
     const shopifyApi = initializeShopify();
     
     // Sanitize shop domain
     const sanitizedShop = shopifyApi.utils.sanitizeShop(shop, true);
+    console.log('✅ Shop sanitized:', sanitizedShop);
     
     // Build OAuth URL manually
     const scopes = ['read_orders', 'read_assigned_fulfillment_orders'].join(',');
-    const redirectUri = `${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://${process.env.HOST_NAME}/api/shopify/callback`;
+    const hostName = process.env.HOST_NAME || (process.env.NODE_ENV === 'production' ? 'vatpilot.onrender.com' : 'localhost:5000');
+    const hostScheme = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const redirectUri = `${hostScheme}://${hostName}/api/shopify/callback`;
+    
+    console.log('🔧 OAuth URL components:');
+    console.log('  - Host:', `${hostScheme}://${hostName}`);
+    console.log('  - Redirect URI:', redirectUri);
+    console.log('  - Scopes:', scopes);
     
     const authUrl = `https://${sanitizedShop}/admin/oauth/authorize` +
       `?client_id=${process.env.SHOPIFY_API_KEY}` +
@@ -54,10 +74,23 @@ export const getOAuthUrl = (shop, state) => {
       `&state=${encodeURIComponent(state)}` +
       `&response_type=code`;
 
+    console.log('✅ OAuth URL generated successfully');
     return authUrl;
   } catch (error) {
-    console.error('Error generating OAuth URL:', error);
-    throw new Error('Failed to generate OAuth URL');
+    console.error('❌ Error generating OAuth URL:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      shop,
+      state,
+      env: {
+        SHOPIFY_API_KEY: !!process.env.SHOPIFY_API_KEY,
+        SHOPIFY_API_SECRET: !!process.env.SHOPIFY_API_SECRET,
+        HOST_NAME: process.env.HOST_NAME,
+        NODE_ENV: process.env.NODE_ENV
+      }
+    });
+    throw new Error(`Failed to generate OAuth URL: ${error.message}`);
   }
 };
 
